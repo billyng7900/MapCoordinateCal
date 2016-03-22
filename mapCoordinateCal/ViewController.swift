@@ -47,6 +47,7 @@ class ViewController: UIViewController{
     var locationStopedTime:NSDate = NSDate()
     var enableTestLocationAlert = false
     var isFirstTimeLocated = true
+    var calculateHeading = CalculateHeading.getCalculateHeading()
     enum motion
     {
         case walking
@@ -59,6 +60,7 @@ class ViewController: UIViewController{
         super.viewDidLoad()
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
+        calculateHeading.delegate = self
         mapView.delegate = self
         let gesture = UILongPressGestureRecognizer(target: self, action: "revealRegionDetailsWithLongPressOnMap:")
         mapView.addGestureRecognizer(gesture)
@@ -68,6 +70,7 @@ class ViewController: UIViewController{
         startAltimeter()
         startMonitorActivity()
         setUpSearch()
+        calculateHeading.startMotionUpdates()
         if let savedPlaceType = defaults.stringForKey("Place Type")
         {
             placeType = savedPlaceType
@@ -344,7 +347,7 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
         let newLocation:CLLocation = locations.last!
         gpsCoordinateCollection.appendGPSCoordinateList(newLocation.coordinate.longitude, latitude: newLocation.coordinate.latitude, accuracy: newLocation.horizontalAccuracy, time: newLocation.timestamp)
         accuracyLabel.text = "\(newLocation.horizontalAccuracy)"
-        distanceLabel.text = "\(newLocation.course)"
+        //distanceLabel.text = "\(newLocation.course)"
         if enableTestLocationAlert
         {
             let alertController = UIAlertController(title: "Location Service Event", message: "Accuracy:\(newLocation.horizontalAccuracy)", preferredStyle: UIAlertControllerStyle.Alert)
@@ -411,22 +414,12 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
         }
     }
     
-    func radiansFromDegrees(degrees: Double)->Double
-    {
-        return degrees * (M_PI/180.0)
-    }
-    
-    func degreesFromRadians(radians: Double)->Double
-    {
-        return radians * (180.0/M_PI)
-    }
-    
     func getNextCoordinate(orginCoord:CLLocationCoordinate2D, distanceMeters:Double,bearing:Double)->CLLocationCoordinate2D
     {
         let distanceInRadians:Double = distanceMeters/6371000.0;//earth's radius
-        let bearingInRadians:Double = radiansFromDegrees(bearing);
-        let orginCoordLatitudeRadians = radiansFromDegrees(orginCoord.latitude)
-        let orginCoordLongitudeRadians = radiansFromDegrees(orginCoord.longitude)
+        let bearingInRadians:Double = CommonFunction.radiansFromDegrees(bearing);
+        let orginCoordLatitudeRadians = CommonFunction.radiansFromDegrees(orginCoord.latitude)
+        let orginCoordLongitudeRadians = CommonFunction.radiansFromDegrees(orginCoord.longitude)
         //print(orginCoord.latitude)
         //print(orginCoord.longitude)
         //haversine formula
@@ -434,7 +427,7 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
         var newCoordLongitudeRadians = orginCoordLongitudeRadians + atan2(sin(bearingInRadians) * sin(distanceInRadians) * cos(orginCoordLongitudeRadians), cos(distanceInRadians) - sin(orginCoordLongitudeRadians) * sin(orginCoordLongitudeRadians))
         
         newCoordLongitudeRadians = fmod((newCoordLongitudeRadians + 3*M_PI),(2*M_PI)) - M_PI
-        let newCoord: CLLocationCoordinate2D = CLLocationCoordinate2DMake(CLLocationDegrees(degreesFromRadians(newCoordLatitudeRadains)), CLLocationDegrees(degreesFromRadians(newCoordLongitudeRadians)))
+        let newCoord: CLLocationCoordinate2D = CLLocationCoordinate2DMake(CLLocationDegrees(CommonFunction.degreesFromRadians(newCoordLatitudeRadains)), CLLocationDegrees(CommonFunction.degreesFromRadians(newCoordLongitudeRadians)))
         //print(degreesFromRadians(newCoordLatitudeRadains))
         //(degreesFromRadians(newCoordLongitudeRadians))
         return newCoord
@@ -516,6 +509,17 @@ extension ViewController
     @IBAction func cancel(segue:UIStoryboardSegue)
     {
         
+    }
+}
+
+extension ViewController:CalculateHeadingDelegate
+{
+    func calculateHeading(calculateHeading: CalculateHeadingProtocol, didUpdateHeadingValue: Double) {
+        distanceLabel.text = "\(didUpdateHeadingValue)"
+    }
+    
+    func calculateHeading(CalculateHeading: CalculateHeadingProtocol, didRotatedDevice: Bool) {
+        //do nothing
     }
 }
 

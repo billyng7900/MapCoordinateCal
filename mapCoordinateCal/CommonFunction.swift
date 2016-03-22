@@ -16,4 +16,14 @@ public class CommonFunction
         let formattedDate = formatter.stringFromDate(date)
         return formattedDate
     }
+    
+    public static func radiansFromDegrees(degrees: Double)->Double
+    {
+        return degrees * (M_PI/180.0)
+    }
+    
+    public static func degreesFromRadians(radians: Double)->Double
+    {
+        return radians * (180.0/M_PI)
+    }
 }

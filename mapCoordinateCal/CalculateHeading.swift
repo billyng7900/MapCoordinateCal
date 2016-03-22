@@ -9,7 +9,7 @@
 import Foundation
 import CoreMotion
 
-public class CalculateHeading:CalculateHeadingProtocol
+public class CalculateHeading:NSObject, CalculateHeadingProtocol
 {
     private var motionManager = CMMotionManager()
     private static var calculateHeading = CalculateHeading()
@@ -24,14 +24,16 @@ public class CalculateHeading:CalculateHeadingProtocol
     private var previousX = Double?()
     private var previousY = Double?()
     private var previousZ = Double?()
-    private var accelerometerGravity = [CMAcceleration]()
     private var attitudeList = [Attitude]()
     private var lastPeakCheckingTime:NSDate? = nil
     private let rotationRange = 0.45 //in rad
     private var isRemoving = false
+    private var gravityX = Double?()
+    private var gravityY = Double?()
+    private var gravityZ = Double?()
     var delegate: CalculateHeadingDelegate?
     
-    private init()
+    override init()
     {
         
     }
@@ -68,16 +70,18 @@ public class CalculateHeading:CalculateHeadingProtocol
                     if !self.isRemoving
                     {
                         self.accelerationAbsList.append(Acceleration(acceleration: self.previousAbs!, time: timeNow))
-                        self.accelerationAbsList.append(Acceleration(acceleration: self.previousAbs!, time: timeNow))
-                        self.accelerationAbsList.append(Acceleration(acceleration: self.previousAbs!, time: timeNow))
-                        self.accelerationAbsList.append(Acceleration(acceleration: self.previousAbs!, time: timeNow))
+                        self.accelerationXList.append(Acceleration(acceleration: self.previousX!, time: timeNow))
+                        self.accelerationYList.append(Acceleration(acceleration: self.previousY!, time: timeNow))
+                        self.accelerationZList.append(Acceleration(acceleration: self.previousZ!, time: timeNow))
                         self.attitudeList.append(Attitude(attitude: (data?.attitude)!, time: timeNow))
-                        self.accelerometerGravity.append((data?.gravity)!)
+                        self.gravityX = (data?.gravity.x)!
+                        self.gravityY = (data?.gravity.y)!
+                        self.gravityZ = (data?.gravity.z)!
                     }
                 }
             })
         }
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "checkPeak", userInfo: nil, repeats: true)
+        timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "checkPeak", userInfo: nil, repeats: true)
     }
     
     public func stopUpdateMotionUpdates()
@@ -91,9 +95,20 @@ public class CalculateHeading:CalculateHeadingProtocol
         return 0.04 * previous + (1.0 - 0.04) * now
     }
     
-    private func checkPeak()
+    public func checkPeak()
     {
-        let isRotated = getIsRotated()
+        let gravityXWhenChecking = gravityX
+        let gravityYWhenChecking = gravityY
+        let gravityZWhenChecking = gravityZ
+        if accelerationAbsList.isEmpty
+        {
+            return
+        }
+        var isRotated = false
+        if lastPeakCheckingTime != nil
+        {
+            isRotated = getIsRotated()
+        }
         lastPeakCheckingTime = NSDate()
         if isRotated
         {
@@ -110,37 +125,92 @@ public class CalculateHeading:CalculateHeadingProtocol
         {
             let peakHelper = PeakHelper()
             let peakLocation = peakHelper.peakFinding(accelerationAbsList)
-            let lowestPeakLocation = peakHelper.findLowestPeak(accelerationAbsList, peaksLocation: peakLocation)
-        
-            delegate?.calculateHeading(self, didUpdateHeadingValue: 123.123)
-        }
-        
-    }
-    
-    private func findLowestValueWithStartAndEnd(start:Int,end:Int,accelerationList:[Acceleration]) -> Double
-    {
-        var lowest:Double? = nil
-        for var i=start;i<=end;i++
-        {
-            if lowest == nil
+            if peakLocation.count > 1
             {
-                lowest = accelerationList[i].getAcceleration()
-            }
-            else
-            {
-                if accelerationList[i].getAcceleration() < lowest
+                let (gravityDirection,sign) = decideGravityDirection(gravityXWhenChecking!, y: gravityYWhenChecking!, z: gravityZWhenChecking!)
+                
+                let lowestPeakLocation = peakHelper.findLowestPeak(accelerationAbsList, peaksLocation: peakLocation)
+                var degreeList = [Double]()
+                var xVector = Double()
+                var yVector = Double()
+                for var i=0;i<lowestPeakLocation.count;i++
                 {
-                    lowest = accelerationList[i].getAcceleration()
+                    xVector += accelerationXList[lowestPeakLocation[i]].getAcceleration()
+                    yVector += accelerationYList[lowestPeakLocation[i]].getAcceleration()
                 }
+                //let overallDegree = toMedianFilter(degreeList)
+                /*var result = Double()
+                let sortedList = overallDegree.sort(sorting)
+                if sortedList.count % 2 == 0
+                {
+                    result = (Double(sortedList[sortedList.count/2]) + Double(sortedList[sortedList.count/2 - 1]))/2
+                }
+                else
+                {
+                    result = Double(sortedList[sortedList.count/2])
+                }
+*/
+                xVector = xVector/Double(lowestPeakLocation.count)
+                yVector = yVector/Double(lowestPeakLocation.count)
+                var degree = CommonFunction.degreesFromRadians(atan2(xVector, yVector))
+                if degree < 0
+                {
+                    degree = 360 + degree
+                }
+                delegate?.calculateHeading(self, didUpdateHeadingValue: degree)
             }
         }
-        return lowest!
     }
     
-    private func medianFilter(valueList:[Double]) -> Double
+    private func sorting(v1:Double,v2:Double) -> Bool
+    {
+        return v1 < v2
+    }
+    
+    private func toMedianFilter(valueList:[Double]) -> Double
+    {
+        var result = Double()
+        if valueList.count == 1
+        {
+            result = valueList[0]
+            return result
+        }
+        var extensionList = [Double]()
+        for var i=0;i<valueList.count;i++
+        {
+            extensionList.append(valueList[i])
+        }
+        extensionList.insert(valueList[extensionList.count-1], atIndex: extensionList.count-1)
+        extensionList.insert(valueList[0], atIndex: 0)
+        
+        var resultArray = medianFilter(extensionList)
+        let finalArray = resultArray.sort(sorting)
+        if finalArray.count % 2 == 0
+        {
+            result = (Double(finalArray[finalArray.count/2]) + Double(finalArray[finalArray.count/2 - 1]))/2
+        }
+        else
+        {
+            result = Double(finalArray[finalArray.count/2])
+        }
+        return result
+    }
+    
+    private func medianFilter(valueList:[Double]) -> [Double]
     {
         //medianFilter
-        return 0
+        var resultList = [Double]()
+        for var i=1; i<valueList.count-1; i++
+        {
+            var result = [Double]()
+            for var j=i-1;j<i+2;j++
+            {
+                result.append(valueList[j])
+            }
+            let resultSorted = result.sort(sorting)
+            resultList.append(resultSorted[resultSorted.count/2])
+        }
+        return resultList
     }
     
     private func getIsRotated() -> Bool
@@ -152,24 +222,24 @@ public class CalculateHeading:CalculateHeadingProtocol
         var attitudeListYawWithinTime = [Double]()
         for var i=0;i<attitudeList.count;i++
         {
-            if lastPeakCheckingTime!.compare(attitudeList[i].getTime()) != NSComparisonResult.OrderedDescending && timeNow.compare(attitudeList[i].getTime()) != NSComparisonResult.OrderedAscending
-            {
+            //if lastPeakCheckingTime!.compare(attitudeList[i].getTime()) != NSComparisonResult.OrderedDescending && timeNow.compare(attitudeList[i].getTime()) != NSComparisonResult.OrderedAscending
+            //{
                 attitudeListPitchWithinTime.append(attitudeList[i].getAttiude().pitch)
                 attitudeListRollWithinTime.append(attitudeList[i].getAttiude().roll)
                 attitudeListYawWithinTime.append(attitudeList[i].getAttiude().yaw)
-            }
+            //}
         }
         let pitchRange = isMoreThanRange(peakHelper.findLowestAttitude(attitudeListPitchWithinTime), highest: peakHelper.findHighestValue(attitudeListPitchWithinTime))
         let rollRange = isMoreThanRange(peakHelper.findLowestAttitude(attitudeListRollWithinTime), highest: peakHelper.findHighestValue(attitudeListRollWithinTime))
         let yawRange = isMoreThanRange(peakHelper.findLowestAttitude(attitudeListYawWithinTime), highest: peakHelper.findHighestValue(attitudeListYawWithinTime))
         
-        if pitchRange && rollRange && yawRange
+        if !pitchRange && !rollRange && !yawRange
         {
-            return true
+            return false
         }
         else
         {
-            return false
+            return true
         }
     }
     
@@ -185,8 +255,43 @@ public class CalculateHeading:CalculateHeadingProtocol
         }
     }
     
-    private func decideGravityDirection()
+    private func decideGravityDirection(var x:Double,var y:Double,var z:Double) -> (String,String)
     {
-        
+        x = abs(x)
+        y = abs(y)
+        z = abs(z)
+        if x > y && x > z
+        {
+            if x < 0
+            {
+                return ("x","negative")
+            }
+            else
+            {
+                return ("x","postive")
+            }
+        }
+        else if y > x && y > z
+        {
+            if y < 0
+            {
+                return ("y","negative")
+            }
+            else
+            {
+                return ("y","postive")
+            }
+        }
+        else
+        {
+            if z < 0
+            {
+                return ("z","negative")
+            }
+            else
+            {
+                return ("z","postive")
+            }
+        }
     }
 }

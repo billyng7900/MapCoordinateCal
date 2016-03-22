@@ -154,7 +154,6 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="9Rf-gf-tFF"/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="accuracyLabel" destination="ZCE-Kl-0jF" id="Jvx-IP-xS7"/>
                         <outlet property="altitudeLabel" destination="5Mf-AP-FUs" id="tdC-7U-X0V"/>
