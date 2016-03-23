@@ -681,12 +681,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480357382.19532"
+            timestampString = "480416353.459568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "163"
-            endingLineNumber = "163"
-            landmarkName = "toMedianFilter(_:)"
+            startingLineNumber = "164"
+            endingLineNumber = "164"
+            landmarkName = "checkPeak()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -777,11 +777,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480357382.19532"
+            timestampString = "480416353.459568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
             landmarkName = "checkPeak()"
             landmarkType = "5">
          </BreakpointContent>
@@ -793,11 +793,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480357382.19532"
+            timestampString = "480416353.459568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
             landmarkName = "medianFilter(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -825,11 +825,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480357382.19532"
+            timestampString = "480416353.459568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "134"
-            endingLineNumber = "134"
+            startingLineNumber = "147"
+            endingLineNumber = "147"
             landmarkName = "checkPeak()"
             landmarkType = "5">
          </BreakpointContent>
@@ -841,11 +841,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480357382.19532"
+            timestampString = "480416353.459568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "205"
-            endingLineNumber = "205"
+            startingLineNumber = "206"
+            endingLineNumber = "206"
             landmarkName = "medianFilter(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -857,11 +857,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480357382.19532"
+            timestampString = "480416353.459568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "169"
-            endingLineNumber = "169"
+            startingLineNumber = "170"
+            endingLineNumber = "170"
+            landmarkName = "CalculateHeading"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mapCoordinateCal/CalculateHeading.swift"
+            timestampString = "480416353.459568"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "176"
+            endingLineNumber = "176"
             landmarkName = "toMedianFilter(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -873,27 +889,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480357382.19532"
+            timestampString = "480416353.459568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "175"
-            endingLineNumber = "175"
-            landmarkName = "toMedianFilter(_:)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480357382.19532"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "187"
-            endingLineNumber = "187"
+            startingLineNumber = "188"
+            endingLineNumber = "188"
             landmarkName = "toMedianFilter(_:)"
             landmarkType = "5">
          </BreakpointContent>
@@ -937,11 +937,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480357382.19532"
+            timestampString = "480416353.459568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "218"
-            endingLineNumber = "218"
+            startingLineNumber = "219"
+            endingLineNumber = "219"
             landmarkName = "getIsRotated()"
             landmarkType = "5">
          </BreakpointContent>
@@ -1001,11 +1001,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480357382.19532"
+            timestampString = "480416353.459568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "223"
-            endingLineNumber = "223"
+            startingLineNumber = "224"
+            endingLineNumber = "224"
             landmarkName = "getIsRotated()"
             landmarkType = "5">
          </BreakpointContent>
@@ -1017,11 +1017,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480357382.19532"
+            timestampString = "480416353.459568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "227"
-            endingLineNumber = "227"
+            startingLineNumber = "228"
+            endingLineNumber = "228"
             landmarkName = "getIsRotated()"
             landmarkType = "5">
          </BreakpointContent>
@@ -1033,12 +1033,108 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/CalculateHeading.swift"
-            timestampString = "480359972.724165"
+            timestampString = "480416353.459568"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "259"
-            endingLineNumber = "259"
+            startingLineNumber = "260"
+            endingLineNumber = "260"
             landmarkName = "decideGravityDirection(_:y:z:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mapCoordinateCal/GravityX.swift"
+            timestampString = "480416353.459568"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "13"
+            endingLineNumber = "13"
+            landmarkName = "GravityX"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mapCoordinateCal/CalculateHeading.swift"
+            timestampString = "480416370.889822"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "144"
+            endingLineNumber = "144"
+            landmarkName = "checkPeak()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mapCoordinateCal/GravityZ.swift"
+            timestampString = "480416552.541179"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "getDegree(_:accelerationListY:accelerationListX:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mapCoordinateCal/GravityZ.swift"
+            timestampString = "480416553.973163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "27"
+            endingLineNumber = "27"
+            landmarkName = "getDegree(_:accelerationListY:accelerationListX:)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mapCoordinateCal/CalculateHeading.swift"
+            timestampString = "480416819.834128"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "136"
+            endingLineNumber = "136"
+            landmarkName = "checkPeak()"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "mapCoordinateCal/CalculateHeading.swift"
+            timestampString = "480416834.58641"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "140"
+            endingLineNumber = "140"
+            landmarkName = "checkPeak()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

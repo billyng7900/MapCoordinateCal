@@ -26,4 +26,13 @@ public class CommonFunction
     {
         return radians * (180.0/M_PI)
     }
+    
+    public static func checkDegree(var degree:Double)->Double
+    {
+        if degree < 0
+        {
+            degree = 360 + degree
+        }
+        return degree
+    }
 }

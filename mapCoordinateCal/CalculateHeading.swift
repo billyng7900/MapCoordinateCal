@@ -127,36 +127,37 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
             let peakLocation = peakHelper.peakFinding(accelerationAbsList)
             if peakLocation.count > 1
             {
-                let (gravityDirection,sign) = decideGravityDirection(gravityXWhenChecking!, y: gravityYWhenChecking!, z: gravityZWhenChecking!)
+                let gravity = decideGravityDirection(gravityXWhenChecking!, y: gravityYWhenChecking!, z: gravityZWhenChecking!)
                 
                 let lowestPeakLocation = peakHelper.findLowestPeak(accelerationAbsList, peaksLocation: peakLocation)
-                var degreeList = [Double]()
-                var xVector = Double()
+                var degree = Double()
+                if let gravityX = gravity as? GravityX
+                {
+                    degree = gravityX.getDegree(lowestPeakLocation, accelerationListY: accelerationYList, accelerationListX: accelerationZList)
+                }
+                else if let gravityY = gravity as? GravityY
+                {
+                    degree = gravityY.getDegree(lowestPeakLocation, accelerationListY: accelerationZList, accelerationListX: accelerationXList)
+                }
+                else if let gravityZ = gravity as? GravityZ
+                {
+                    degree = gravityZ.getDegree(lowestPeakLocation, accelerationListY: accelerationYList, accelerationListX: accelerationXList)
+                }
+                //var degreeList = [Double]()
+                /*var xVector = Double()
                 var yVector = Double()
                 for var i=0;i<lowestPeakLocation.count;i++
                 {
                     xVector += accelerationXList[lowestPeakLocation[i]].getAcceleration()
                     yVector += accelerationYList[lowestPeakLocation[i]].getAcceleration()
                 }
-                //let overallDegree = toMedianFilter(degreeList)
-                /*var result = Double()
-                let sortedList = overallDegree.sort(sorting)
-                if sortedList.count % 2 == 0
-                {
-                    result = (Double(sortedList[sortedList.count/2]) + Double(sortedList[sortedList.count/2 - 1]))/2
-                }
-                else
-                {
-                    result = Double(sortedList[sortedList.count/2])
-                }
-*/
                 xVector = xVector/Double(lowestPeakLocation.count)
                 yVector = yVector/Double(lowestPeakLocation.count)
                 var degree = CommonFunction.degreesFromRadians(atan2(xVector, yVector))
                 if degree < 0
                 {
                     degree = 360 + degree
-                }
+                }*/
                 delegate?.calculateHeading(self, didUpdateHeadingValue: degree)
             }
         }
@@ -255,43 +256,24 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
         }
     }
     
-    private func decideGravityDirection(var x:Double,var y:Double,var z:Double) -> (String,String)
+    private func decideGravityDirection(x:Double,y:Double,z:Double) -> Gravity
     {
-        x = abs(x)
-        y = abs(y)
-        z = abs(z)
-        if x > y && x > z
+        let Absx = abs(x)
+        let Absy = abs(y)
+        let Absz = abs(z)
+        var gravity:Gravity
+        if Absx > Absy && x > Absz
         {
-            if x < 0
-            {
-                return ("x","negative")
-            }
-            else
-            {
-                return ("x","postive")
-            }
+            gravity = GravityX(isPositive:x > 0)
         }
-        else if y > x && y > z
+        else if Absy > Absx && Absy > Absz
         {
-            if y < 0
-            {
-                return ("y","negative")
-            }
-            else
-            {
-                return ("y","postive")
-            }
+            gravity = GravityY(isPositive:y > 0)
         }
         else
         {
-            if z < 0
-            {
-                return ("z","negative")
-            }
-            else
-            {
-                return ("z","postive")
-            }
+            gravity = GravityZ(isPositive:z > 0)
         }
+        return gravity
     }
 }

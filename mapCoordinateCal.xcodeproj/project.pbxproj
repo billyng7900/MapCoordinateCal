@@ -45,6 +45,10 @@
 		66CDCDCC1C96F6AF003AB282 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 66CDCDC01C96F6AF003AB282 /* Icon-Small@2x.png */; };
 		66CDCDCD1C96F6AF003AB282 /* Icon-Small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 66CDCDC11C96F6AF003AB282 /* Icon-Small@3x.png */; };
 		66CDCDCF1C96F80E003AB282 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 66CDCDCE1C96F80E003AB282 /* Launch Screen.storyboard */; };
+		66D693AF1CA2849D00D713E8 /* Gravity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D693AE1CA2849D00D713E8 /* Gravity.swift */; };
+		66D693B11CA2862100D713E8 /* GravityX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D693B01CA2862100D713E8 /* GravityX.swift */; };
+		66D693B31CA2862A00D713E8 /* GravityY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D693B21CA2862A00D713E8 /* GravityY.swift */; };
+		66D693B51CA2863200D713E8 /* GravityZ.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D693B41CA2863200D713E8 /* GravityZ.swift */; };
 		66FE3E0C1C9D76D00029094F /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FE3E0B1C9D76CF0029094F /* SearchResult.swift */; };
 /* End PBXBuildFile section */
 
@@ -89,6 +93,10 @@
 		66CDCDC01C96F6AF003AB282 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
 		66CDCDC11C96F6AF003AB282 /* Icon-Small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@3x.png"; sourceTree = "<group>"; };
 		66CDCDCE1C96F80E003AB282 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "../Launch Screen.storyboard"; sourceTree = "<group>"; };
+		66D693AE1CA2849D00D713E8 /* Gravity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gravity.swift; sourceTree = "<group>"; };
+		66D693B01CA2862100D713E8 /* GravityX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GravityX.swift; sourceTree = "<group>"; };
+		66D693B21CA2862A00D713E8 /* GravityY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GravityY.swift; sourceTree = "<group>"; };
+		66D693B41CA2863200D713E8 /* GravityZ.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GravityZ.swift; sourceTree = "<group>"; };
 		66FE3E0B1C9D76CF0029094F /* SearchResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -157,6 +165,10 @@
 				66FE3E0B1C9D76CF0029094F /* SearchResult.swift */,
 				668645741C9FF6150063CC81 /* Acceleration.swift */,
 				668645781CA056CC0063CC81 /* Attitude.swift */,
+				66D693AE1CA2849D00D713E8 /* Gravity.swift */,
+				66D693B01CA2862100D713E8 /* GravityX.swift */,
+				66D693B21CA2862A00D713E8 /* GravityY.swift */,
+				66D693B41CA2863200D713E8 /* GravityZ.swift */,
 			);
 			name = Object;
 			sourceTree = "<group>";
@@ -277,8 +289,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				66D693B31CA2862A00D713E8 /* GravityY.swift in Sources */,
 				666DD4CE1C9162C000534E6F /* CommonFunction.swift in Sources */,
 				66CA8CD01C9146B700580386 /* BearingCollection.swift in Sources */,
+				66D693AF1CA2849D00D713E8 /* Gravity.swift in Sources */,
 				66FE3E0C1C9D76D00029094F /* SearchResult.swift in Sources */,
 				66CA8CD21C9149EE00580386 /* StepCollection.swift in Sources */,
 				662E5FEE1C8EAAC600EB56BA /* AlgorithmIdentifierTableViewController.swift in Sources */,
@@ -286,8 +300,10 @@
 				668645771CA02D5D0063CC81 /* CalculateHeadingProtocol.swift in Sources */,
 				668645751C9FF6150063CC81 /* Acceleration.swift in Sources */,
 				66CA8CCE1C91439800580386 /* Bearing.swift in Sources */,
+				66D693B51CA2863200D713E8 /* GravityZ.swift in Sources */,
 				668645731C9FF5AE0063CC81 /* PeakHelper.swift in Sources */,
 				668645701C9FF1FA0063CC81 /* CalculateHeading.swift in Sources */,
+				66D693B11CA2862100D713E8 /* GravityX.swift in Sources */,
 				667AA0641C94705400B1E3FB /* AltitudeCollection.swift in Sources */,
 				662B86D01C8AB27700578026 /* UserLastAnnotationView.swift in Sources */,
 				667AA0621C94700F00B1E3FB /* Altitude.swift in Sources */,
