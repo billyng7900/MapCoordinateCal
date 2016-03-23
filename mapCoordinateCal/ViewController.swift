@@ -48,6 +48,7 @@ class ViewController: UIViewController{
     var enableTestLocationAlert = false
     var isFirstTimeLocated = true
     var calculateHeading = CalculateHeading.getCalculateHeading()
+    
     enum motion
     {
         case walking
@@ -217,12 +218,15 @@ class ViewController: UIViewController{
                         let pace = data!.currentPace != nil ? data!.currentPace : nil
                         let cadence = data!.currentCadence != nil ? data!.currentCadence : nil
                         let changeDistance = Double(data!.distance!) - self.totalDistanceCount
-                        let bearingRecord = self.bearingCollection.mapBearingRecordFromDate(NSDate())
-                        self.stepCollection.appendStepList(Int(data!.numberOfSteps), distance:changeDistance, startDate: data!.startDate, endDate: data!.endDate, pace: pace, cadence: cadence, bearing: 360 - Double(bearingRecord.getBearing()))
-                        //self.distanceLabel.text = "\(data!.distance!)"
-                        if self.locationUpdateIsStopped
+                        if self.bearingCollection.isEmpty()
                         {
-                            self.drawWalkingLine()
+                            let bearingRecord = self.bearingCollection.mapBearingRecordFromDate(NSDate())
+                            self.stepCollection.appendStepList(Int(data!.numberOfSteps), distance:changeDistance, startDate: data!.startDate, endDate: data!.endDate, pace: pace, cadence: cadence, bearing: 360 - Double(bearingRecord.getBearing()))
+                            //self.distanceLabel.text = "\(data!.distance!)"
+                            if self.locationUpdateIsStopped
+                            {
+                                self.drawWalkingLine()
+                            }
                         }
                         self.totalDistanceCount = Double(data!.distance!)
                     }
@@ -242,7 +246,15 @@ class ViewController: UIViewController{
         }
         else
         {
+            let settingAction = UIAlertAction(title: "Setting", style: .Default, handler: {(_) -> Void in
+                let settingURL = NSURL(string: "prefs:root=LOCATION_SERVICES")
+                if let url = settingURL
+                {
+                    UIApplication.sharedApplication().openURL(url)
+                }
+            })
             let alertController = UIAlertController(title: "Location Service Denied", message: "Unable to determine your location", preferredStyle: UIAlertControllerStyle.Alert)
+            alertController.addAction(settingAction)
             alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
             self.presentViewController(alertController, animated: true, completion: nil)
         }
@@ -520,6 +532,27 @@ extension ViewController:CalculateHeadingDelegate
     
     func calculateHeading(CalculateHeading: CalculateHeadingProtocol, didRotatedDevice: Bool) {
         //do nothing
+    }
+    
+    func checkCorrectedHeading(var correctedHeading:Double) -> Double
+    {
+        if correctedHeading <= 25 && correctedHeading >= 335
+        {
+            correctedHeading = 0
+        }
+        else if correctedHeading <= 115 && correctedHeading >= 65
+        {
+            correctedHeading = 90
+        }
+        else if correctedHeading <= 205 && correctedHeading >= 155
+        {
+            correctedHeading = 180
+        }
+        else if correctedHeading <= 295 && correctedHeading >= 245
+        {
+            correctedHeading = 270
+        }
+        return correctedHeading
     }
 }
 

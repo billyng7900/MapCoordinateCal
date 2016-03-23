@@ -118,6 +118,7 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
             accelerationYList.removeAll()
             accelerationZList.removeAll()
             attitudeList.removeAll()
+            delegate?.calculateHeading(self, didRotatedDevice: true)
             isRemoving = false
             
         }

@@ -20,20 +20,26 @@ public class GravityY: NSObject, Gravity
     {
         var xVector = Double()
         var zVector = Double()
+        var weight:Double = 1
+        var sum:Double = 0
         if isPositive
         {
             for var i=0;i<lowestPeakLocation.count;i++
             {
-                xVector += accelerationListX[lowestPeakLocation[i]].getAcceleration()
-                zVector += accelerationListY[lowestPeakLocation[i]].getAcceleration()
+                xVector += accelerationListX[lowestPeakLocation[i]].getAcceleration() * weight
+                zVector += accelerationListY[lowestPeakLocation[i]].getAcceleration() * weight
+                sum = sum + weight
+                weight = weight + 0.2
             }
         }
         else
         {
             for var i=0;i<lowestPeakLocation.count;i++
             {
-                xVector += accelerationListX[lowestPeakLocation[i]].getAcceleration()
-                zVector += -(accelerationListY[lowestPeakLocation[i]].getAcceleration())
+                xVector += accelerationListX[lowestPeakLocation[i]].getAcceleration() * weight
+                zVector += -(accelerationListY[lowestPeakLocation[i]].getAcceleration()) * weight
+                sum = sum + weight
+                weight = weight + 0.2
             }
         }
         xVector = xVector/Double(lowestPeakLocation.count)

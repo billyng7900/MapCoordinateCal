@@ -41,4 +41,9 @@ public class BearingCollection
         }
         return bearingList.last!
     }
+    
+    public func isEmpty() -> Bool
+    {
+        return bearingList.isEmpty
+    }
 }

@@ -20,24 +20,30 @@ public class GravityZ: NSObject, Gravity
     {
         var xVector = Double()
         var yVector = Double()
+        var weight:Double = 1
+        var sum:Double = 0
         if !isPositive
         {
             for var i=0;i<lowestPeakLocation.count;i++
             {
-                xVector += accelerationListX[lowestPeakLocation[i]].getAcceleration()
-                yVector += accelerationListY[lowestPeakLocation[i]].getAcceleration()
+                xVector += accelerationListX[lowestPeakLocation[i]].getAcceleration() * weight
+                yVector += accelerationListY[lowestPeakLocation[i]].getAcceleration() * weight
+                sum = sum + weight
+                weight = weight + 0.2
             }
         }
         else
         {
             for var i=0;i<lowestPeakLocation.count;i++
             {
-                xVector += accelerationListX[lowestPeakLocation[i]].getAcceleration()
-                yVector += -(accelerationListY[lowestPeakLocation[i]].getAcceleration())
+                xVector += accelerationListX[lowestPeakLocation[i]].getAcceleration() * weight
+                yVector += -(accelerationListY[lowestPeakLocation[i]].getAcceleration()) * weight
+                sum = sum + weight
+                weight = weight + 0.2
             }
         }
-        xVector = xVector/Double(lowestPeakLocation.count)
-        yVector = yVector/Double(lowestPeakLocation.count)
+        xVector = xVector/sum
+        yVector = yVector/sum
         var degree = CommonFunction.degreesFromRadians(atan2(xVector, yVector))
         degree = CommonFunction.checkDegree(degree)
         return degree

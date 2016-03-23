@@ -55,7 +55,7 @@ public class SearchResult
                         }
                     }
                 }
-                catch let parseError
+                catch 
                 {
                     
                 }
