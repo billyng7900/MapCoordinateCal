@@ -16,7 +16,7 @@ public class GravityY: NSObject, Gravity
         self.isPositive = isPositive
     }
 
-    public func getDegree(lowestPeakLocation:[Int],accelerationListY:[Acceleration],accelerationListX:[Acceleration]) -> Double
+    public func getDegree(lowestPeakLocation:[Int],accelerationListY:[Acceleration],accelerationListX:[Acceleration],gravity1List:[Double],gravity2List:[Double]) -> Double
     {
         var xVector = Double()
         var zVector = Double()

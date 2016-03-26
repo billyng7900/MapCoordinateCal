@@ -16,6 +16,7 @@
 		664E6C0E1C5CBA56006A21DF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 664E6C0C1C5CBA56006A21DF /* Main.storyboard */; };
 		664E6C101C5CBA56006A21DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 664E6C0F1C5CBA56006A21DF /* Assets.xcassets */; };
 		666DD4CE1C9162C000534E6F /* CommonFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666DD4CD1C9162C000534E6F /* CommonFunction.swift */; };
+		667757C21CA3A999004FF6E0 /* CalculateLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667757C11CA3A999004FF6E0 /* CalculateLocation.swift */; };
 		667AA0621C94700F00B1E3FB /* Altitude.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667AA0611C94700F00B1E3FB /* Altitude.swift */; };
 		667AA0641C94705400B1E3FB /* AltitudeCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667AA0631C94705400B1E3FB /* AltitudeCollection.swift */; };
 		668403991C9AAD4700AA2A0F /* SearchResultTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 668403981C9AAD4700AA2A0F /* SearchResultTableViewController.swift */; };
@@ -45,6 +46,7 @@
 		66CDCDCC1C96F6AF003AB282 /* Icon-Small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 66CDCDC01C96F6AF003AB282 /* Icon-Small@2x.png */; };
 		66CDCDCD1C96F6AF003AB282 /* Icon-Small@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 66CDCDC11C96F6AF003AB282 /* Icon-Small@3x.png */; };
 		66CDCDCF1C96F80E003AB282 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 66CDCDCE1C96F80E003AB282 /* Launch Screen.storyboard */; };
+		66D491741CA53C6700CE612C /* AngleFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D491731CA53C6700CE612C /* AngleFinder.swift */; };
 		66D693AF1CA2849D00D713E8 /* Gravity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D693AE1CA2849D00D713E8 /* Gravity.swift */; };
 		66D693B11CA2862100D713E8 /* GravityX.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D693B01CA2862100D713E8 /* GravityX.swift */; };
 		66D693B31CA2862A00D713E8 /* GravityY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66D693B21CA2862A00D713E8 /* GravityY.swift */; };
@@ -64,6 +66,7 @@
 		664E6C0F1C5CBA56006A21DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		664E6C141C5CBA56006A21DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		666DD4CD1C9162C000534E6F /* CommonFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonFunction.swift; sourceTree = "<group>"; };
+		667757C11CA3A999004FF6E0 /* CalculateLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculateLocation.swift; sourceTree = "<group>"; };
 		667AA0611C94700F00B1E3FB /* Altitude.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Altitude.swift; sourceTree = "<group>"; };
 		667AA0631C94705400B1E3FB /* AltitudeCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AltitudeCollection.swift; sourceTree = "<group>"; };
 		668403981C9AAD4700AA2A0F /* SearchResultTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultTableViewController.swift; sourceTree = "<group>"; };
@@ -93,6 +96,7 @@
 		66CDCDC01C96F6AF003AB282 /* Icon-Small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@2x.png"; sourceTree = "<group>"; };
 		66CDCDC11C96F6AF003AB282 /* Icon-Small@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-Small@3x.png"; sourceTree = "<group>"; };
 		66CDCDCE1C96F80E003AB282 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "../Launch Screen.storyboard"; sourceTree = "<group>"; };
+		66D491731CA53C6700CE612C /* AngleFinder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AngleFinder.swift; sourceTree = "<group>"; };
 		66D693AE1CA2849D00D713E8 /* Gravity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Gravity.swift; sourceTree = "<group>"; };
 		66D693B01CA2862100D713E8 /* GravityX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GravityX.swift; sourceTree = "<group>"; };
 		66D693B21CA2862A00D713E8 /* GravityY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GravityY.swift; sourceTree = "<group>"; };
@@ -135,6 +139,7 @@
 				66959D611C60A70B005F6A31 /* Graphics */,
 				664E6C081C5CBA56006A21DF /* AppDelegate.swift */,
 				664E6C0A1C5CBA56006A21DF /* ViewController.swift */,
+				667757C11CA3A999004FF6E0 /* CalculateLocation.swift */,
 				662B86CF1C8AB27700578026 /* UserLastAnnotationView.swift */,
 				662E5FEF1C8EB11400EB56BA /* SettingsTableViewController.swift */,
 				662E5FED1C8EAAC600EB56BA /* AlgorithmIdentifierTableViewController.swift */,
@@ -143,6 +148,7 @@
 				668645761CA02D5D0063CC81 /* CalculateHeadingProtocol.swift */,
 				6686456F1C9FF1FA0063CC81 /* CalculateHeading.swift */,
 				668645721C9FF5AE0063CC81 /* PeakHelper.swift */,
+				66D491731CA53C6700CE612C /* AngleFinder.swift */,
 				664E6C0C1C5CBA56006A21DF /* Main.storyboard */,
 				664E6C0F1C5CBA56006A21DF /* Assets.xcassets */,
 				66CDCDCE1C96F80E003AB282 /* Launch Screen.storyboard */,
@@ -300,12 +306,14 @@
 				668645771CA02D5D0063CC81 /* CalculateHeadingProtocol.swift in Sources */,
 				668645751C9FF6150063CC81 /* Acceleration.swift in Sources */,
 				66CA8CCE1C91439800580386 /* Bearing.swift in Sources */,
+				667757C21CA3A999004FF6E0 /* CalculateLocation.swift in Sources */,
 				66D693B51CA2863200D713E8 /* GravityZ.swift in Sources */,
 				668645731C9FF5AE0063CC81 /* PeakHelper.swift in Sources */,
 				668645701C9FF1FA0063CC81 /* CalculateHeading.swift in Sources */,
 				66D693B11CA2862100D713E8 /* GravityX.swift in Sources */,
 				667AA0641C94705400B1E3FB /* AltitudeCollection.swift in Sources */,
 				662B86D01C8AB27700578026 /* UserLastAnnotationView.swift in Sources */,
+				66D491741CA53C6700CE612C /* AngleFinder.swift in Sources */,
 				667AA0621C94700F00B1E3FB /* Altitude.swift in Sources */,
 				662E5FF01C8EB11400EB56BA /* SettingsTableViewController.swift in Sources */,
 				668C75F11C8D28470018E5DD /* Step.swift in Sources */,

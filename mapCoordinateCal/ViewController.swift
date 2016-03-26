@@ -72,6 +72,7 @@ class ViewController: UIViewController{
         startMonitorActivity()
         setUpSearch()
         calculateHeading.startMotionUpdates()
+        testStepRecordAdd()
         if let savedPlaceType = defaults.stringForKey("Place Type")
         {
             placeType = savedPlaceType
@@ -97,6 +98,15 @@ class ViewController: UIViewController{
         searchResultTable.mapView = mapView
     }
     
+    func testAltitude()
+    {
+        let timeNow = NSDate()
+        altitudeCollection.appendAltitude(0.2, time: timeNow.dateByAddingTimeInterval(3))
+        altitudeCollection.appendAltitude(0.4, time: timeNow.dateByAddingTimeInterval(6))
+        altitudeCollection.appendAltitude(0.2, time: timeNow.dateByAddingTimeInterval(-2))
+        altitudeCollection.appendAltitude(0.2, time: timeNow.dateByAddingTimeInterval(4))
+        altitudeCollection.getAccumulatedAltitudeChange(timeNow, timeEnd: timeNow.dateByAddingTimeInterval(5))
+    }
     func testCoordinate()
     {
         var accuracy = 58.0
@@ -145,12 +155,13 @@ class ViewController: UIViewController{
     
     func testStepRecordAdd()
     {
-        var dateSecond:Int = 11
-        for var i=0; i<7; i++
-        {
-            stepCollection.appendStepList(12, distance: 1, startDate: NSDate(), endDate: testNSDateAdd("12:11:\(dateSecond)"), pace: nil, cadence: nil, bearing: 123)
-            dateSecond++
-        }
+        let timeNow = NSDate()
+        altitudeCollection.appendAltitude(0.2, time: timeNow.dateByAddingTimeInterval(3))
+        altitudeCollection.appendAltitude(0.4, time: timeNow.dateByAddingTimeInterval(6))
+        altitudeCollection.appendAltitude(0.3, time: timeNow.dateByAddingTimeInterval(-2))
+        altitudeCollection.appendAltitude(0.6, time: timeNow.dateByAddingTimeInterval(4))
+        stepCollection.appendStepList(12, distance: 1, startDate: NSDate(), endDate: timeNow.dateByAddingTimeInterval(3), pace: nil, cadence: nil, bearing: 123)
+        stepCollection.appendStepList(12, distance: 1, startDate: NSDate(), endDate: timeNow.dateByAddingTimeInterval(7), pace: nil, cadence: nil, bearing: 123)
     }
 
     override func didReceiveMemoryWarning() {
@@ -323,11 +334,12 @@ class ViewController: UIViewController{
         if !locationUpdateIsStopped
         {
             locationUpdateIsStopped = true
+            bestGPSLocation = CLLocationCoordinate2DMake(22.336672, 114.174293)
             addUserLastMapAnnotation()
             locationStopedTime = NSDate()
             mapView.showsUserLocation = false
-            //var timer = NSTimer()
-            //timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "repeatTimer", userInfo: nil, repeats: true)
+            var timer = NSTimer()
+            timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "repeatTimer", userInfo: nil, repeats: true)
         }
     }
     
@@ -421,7 +433,7 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
             {
                 oldLocation = coordinateWalkArray[coordinateWalkArray.count-1]
             }
-            let newCoord = getNextCoordinate(oldLocation, distanceMeters: step.distance, bearing: step.bearing)
+            let newCoord = getNextCoordinate(oldLocation, distanceMeters: pythThm(step.altitudeChange, c: step.distance), bearing: step.bearing)
             coordinateWalkArray.append(newCoord)
         }
     }
@@ -448,7 +460,8 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
     
     func pythThm(b:Double,c:Double) -> Double
     {
-        let a = sqrt((c*c)-(b*b))
+        let result = (c*c)-(b*b)
+        let a = sqrt(result)
         return a
     }
     
@@ -506,6 +519,7 @@ extension ViewController
             }
         }
     }
+    
     @IBAction func testLocationEvent(sender: AnyObject)
     {
         if !enableTestLocationAlert

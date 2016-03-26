@@ -28,7 +28,7 @@ public class AltitudeCollection
         var accumulatedAltitude = 0.0
         for altitude in altitudeList
         {
-            if altitude.time.compare(timeStart) != NSComparisonResult.OrderedDescending && timeEnd.compare(altitude.time) != NSComparisonResult.OrderedAscending
+            if timeStart.compare(altitude.time) != NSComparisonResult.OrderedDescending && timeEnd.compare(altitude.time) != NSComparisonResult.OrderedAscending
             {
                 accumulatedAltitude += altitude.altitude
             }

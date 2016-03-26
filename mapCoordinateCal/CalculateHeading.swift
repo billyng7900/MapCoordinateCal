@@ -31,6 +31,9 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
     private var gravityX = Double?()
     private var gravityY = Double?()
     private var gravityZ = Double?()
+    private var gravityXList = [Double]()
+    private var gravityYList = [Double]()
+    private var gravityZList = [Double]()
     var delegate: CalculateHeadingDelegate?
     
     override init()
@@ -70,18 +73,21 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
                     if !self.isRemoving
                     {
                         self.accelerationAbsList.append(Acceleration(acceleration: self.previousAbs!, time: timeNow))
-                        self.accelerationXList.append(Acceleration(acceleration: self.previousX!, time: timeNow))
-                        self.accelerationYList.append(Acceleration(acceleration: self.previousY!, time: timeNow))
-                        self.accelerationZList.append(Acceleration(acceleration: self.previousZ!, time: timeNow))
+                        self.accelerationXList.append(Acceleration(acceleration: accelerationX, time: timeNow))
+                        self.accelerationYList.append(Acceleration(acceleration: accelerationY, time: timeNow))
+                        self.accelerationZList.append(Acceleration(acceleration: accelerationZ, time: timeNow))
                         self.attitudeList.append(Attitude(attitude: (data?.attitude)!, time: timeNow))
                         self.gravityX = (data?.gravity.x)!
+                        self.gravityXList.append(self.gravityX!)
                         self.gravityY = (data?.gravity.y)!
+                        self.gravityYList.append(self.gravityY!)
                         self.gravityZ = (data?.gravity.z)!
+                        self.gravityZList.append(self.gravityZ!)
                     }
                 }
             })
         }
-        timer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: "checkPeak", userInfo: nil, repeats: true)
+        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "checkPeak", userInfo: nil, repeats: true)
     }
     
     public func stopUpdateMotionUpdates()
@@ -134,15 +140,15 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
                 var degree = Double()
                 if let gravityX = gravity as? GravityX
                 {
-                    degree = gravityX.getDegree(lowestPeakLocation, accelerationListY: accelerationYList, accelerationListX: accelerationZList)
+                    degree = gravityX.getDegree(lowestPeakLocation, accelerationListY: accelerationYList, accelerationListX: accelerationZList,gravity1List:gravityZList,gravity2List:gravityYList)
                 }
                 else if let gravityY = gravity as? GravityY
                 {
-                    degree = gravityY.getDegree(lowestPeakLocation, accelerationListY: accelerationZList, accelerationListX: accelerationXList)
+                    degree = gravityY.getDegree(lowestPeakLocation, accelerationListY: accelerationZList, accelerationListX: accelerationXList,gravity1List:gravityZList,gravity2List:gravityYList)
                 }
                 else if let gravityZ = gravity as? GravityZ
                 {
-                    degree = gravityZ.getDegree(lowestPeakLocation, accelerationListY: accelerationYList, accelerationListX: accelerationXList)
+                    degree = gravityZ.getDegree(lowestPeakLocation, accelerationListY: accelerationYList, accelerationListX: accelerationXList,gravity1List:gravityZList,gravity2List:gravityYList)
                 }
                 //var degreeList = [Double]()
                 /*var xVector = Double()
@@ -275,6 +281,7 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
         {
             gravity = GravityZ(isPositive:z > 0)
         }
+        
         return gravity
     }
 }

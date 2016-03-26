@@ -11,13 +11,24 @@ import CoreLocation
 public class SearchResult
 {
     var description:String
-    var formattedAddress:String
-    var longitude:CLLocationDegrees
-    var latitude:CLLocationDegrees
+    //var formattedAddress:String
+    var placeId:String
     
-    init(description:String, placeId:String)
+    init(prediction:Dictionary<String,AnyObject>)
     {
-        self.description = description
+        var des = String()
+        var place = String()
+        if let description = prediction["description"] as? String
+        {
+            des = description
+        }
+        if let placeId = prediction["place_id"] as? String
+        {
+            place = placeId
+        }
+        self.description = des
+        self.placeId = place
+        /*self.description = description
         self.formattedAddress = ""
         self.longitude = 12
         self.latitude = 123
@@ -66,5 +77,6 @@ public class SearchResult
 //    self.formattedAddress = address!
 //    self.longitude = long!
 //    self.latitude = lat!
-    
+    */
+    }
 }

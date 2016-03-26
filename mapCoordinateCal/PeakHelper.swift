@@ -106,6 +106,19 @@ public class PeakHelper
         return lowestPeakLocationList
     }
     
+    public func findMedianBetweenPeaks(lowestPeakLocation:[Int],peaksLocation:[Int]) -> [Int]
+    {
+        var medianPeaksLocation = [Int]()
+        for var i=0;i<lowestPeakLocation.count;i++
+        {
+            let peakLocation = peaksLocation[i+1]
+            let lowestLocation = lowestPeakLocation[i]
+            let median = (peakLocation - lowestLocation)/2
+            medianPeaksLocation.append(lowestLocation+median)
+        }
+        return medianPeaksLocation
+    }
+    
     public func findLowestAttitude(valueList:[Double]) -> Double
     {
         var lowest:Double? = nil

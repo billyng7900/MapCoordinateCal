@@ -48,63 +48,36 @@ extension SearchResultTableViewController: UISearchResultsUpdating
         }
         let searchBarTextEncode = searchBarText.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
         let requestURL: NSURL = NSURL(string: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(searchBarTextEncode)&key=AIzaSyC-Nx-rs9WG01HZ-peeCvq-NqPAMxILTAE")!
-        let urlRequest: NSMutableURLRequest = NSMutableURLRequest(URL: requestURL)
-        let session = NSURLSession.sharedSession()
-        let task = session.dataTaskWithRequest(urlRequest){
-            (data, response, error) -> Void in
-            let httpResponse = response as! NSHTTPURLResponse
-            let statusCode = httpResponse.statusCode
-            if statusCode == 200
+        let data=NSData(contentsOfURL:requestURL)
+        do
+        {
+            searchResultList.removeAll()
+            let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
+            if let predictions = json["predictions"] as? [[String: AnyObject]]
             {
-                do
+                for prediction in predictions
                 {
-                    let json = try NSJSONSerialization.JSONObjectWithData(data!, options: .AllowFragments)
-                    if let predictions = json["predictions"] as? [[String: AnyObject]]
-                    {
-                        for prediction in predictions
-                        {
-                            if let description = prediction["description"] as? String
-                            {
-                                if let placeId = prediction["place_id"] as? String
-                                {
-                                    let searchResult = SearchResult(description: description, placeId: placeId)
-                                    self.searchResultList.append(searchResult)
-                                }
-                            }
-                        }
-                    }
+                    let searchResult = SearchResult(prediction: prediction)
+                    self.searchResultList.append(searchResult)
                 }
-                catch let parseError
-                {
-                    
-                }
+                self.tableView.reloadData()
             }
         }
-        task.resume()
-        /*let request = MKLocalSearchRequest()
-        request.naturalLanguageQuery = searchBarText
-        request.region = mapView.region
-        let search = MKLocalSearch(request: request)
-        search.startWithCompletionHandler({response, _ in
-            guard let response = response
-            else
-            {
-                return
-            }
-            self.resultItems = response.mapItems
-            self.tableView.reloadData()
-        })*/
+        catch
+        {
+            
+        }
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultItems.count
+        return searchResultList.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell")!
         let selectedItem = searchResultList[indexPath.row]
         cell.textLabel?.text = selectedItem.description
-        cell.detailTextLabel?.text = selectedItem.formattedAddress
+        cell.detailTextLabel?.text = selectedItem.placeId
         return cell
     }
 }
