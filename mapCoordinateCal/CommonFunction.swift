@@ -35,4 +35,11 @@ public class CommonFunction
         }
         return degree
     }
+    
+    public static func pythThm(b:Double,c:Double) -> Double
+    {
+        let result = (c*c)-(b*b)
+        let a = sqrt(result)
+        return a
+    }
 }

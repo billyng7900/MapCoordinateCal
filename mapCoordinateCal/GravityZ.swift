@@ -2,7 +2,7 @@
 //  GravityZ.swift
 //  mapCoordinateCal
 //
-//  Created by 伍裕濬 on 23/3/2016.
+//  Created by 伍裕濬 on 28/3/2016.
 //  Copyright © 2016年 billyng. All rights reserved.
 //
 
@@ -10,46 +10,77 @@ import Foundation
 public class GravityZ: NSObject, Gravity
 {
     public var isPositive:Bool
-    
+    public var finalxVector:Double = 0
+    public var finalyVector:Double = 0
     init(isPositive:Bool)
     {
         self.isPositive = isPositive
     }
-
-    public func getDegree(lowestPeakLocation:[Int],accelerationListY:[Acceleration],accelerationListX:[Acceleration],gravity1List:[Double],gravity2List:[Double]) -> Double
+    
+    public func getDegree(lowestPeakLocation:[Int],peaksLocation:[Int],accelerationListX:[Acceleration],accelerationListY:[Acceleration],accelerationListZ:[Acceleration],gravityXList:[Double],gravityYList:[Double],gravityZList:[Double]) -> Double
     {
         //let peakHelper = PeakHelper()
         //let medianLocation = peakHelper.findMedianBetweenPeaks(lowestPeakLocation, peaksLocation: peaksLocation)
-        var xVector = Double()
-        var yVector = Double()
-        var weight:Double = 1
+        var xVector:Double = 0
+        var yVector:Double = 0
         var sum:Double = 0
+        var weight:Double = 1
         if !isPositive
         {
-            for var i=0;i<lowestPeakLocation.count;i+=2
+            for var i=0;i<peaksLocation.count;i++
             {
                 let angleFinder = AngleFinder()
-                let angle = CommonFunction.degreesFromRadians(angleFinder.findTiltAngle(gravity1List[lowestPeakLocation[i]], gravityAngle2: gravity2List[lowestPeakLocation[i]]))
-                xVector += accelerationListX[lowestPeakLocation[i]].getAcceleration() * weight
-                yVector += (accelerationListY[lowestPeakLocation[i]].getAcceleration()/cos(angle)) * weight
+                let angle = CommonFunction.degreesFromRadians(angleFinder.findTiltAngle(gravityZList[peaksLocation[i]]))
+                let gravityCal = checkSecondGravity(gravityYList[peaksLocation[i]], xGravity: gravityXList[peaksLocation[i]], yAcceleration: accelerationListY[peaksLocation[i]].getAcceleration(), xAcceleration: accelerationListX[peaksLocation[i]].getAcceleration(), angle: angle)
+                xVector += (gravityCal.getHorizontalAcceleartion()) * weight
+                yVector += (gravityCal.getVerticalAcceleration()) * weight
                 sum = sum + weight
-                weight = weight + 0.3
+                if weight < 2
+                {
+                    weight = weight + 0.3
+                }
             }
         }
         else
         {
             for var i=0;i<lowestPeakLocation.count;i++
             {
-                xVector += accelerationListX[lowestPeakLocation[i]].getAcceleration() * weight
-                yVector += -(accelerationListY[lowestPeakLocation[i]].getAcceleration()) * weight
+                let angleFinder = AngleFinder()
+                let angle = CommonFunction.degreesFromRadians(angleFinder.findTiltAngle(gravityZList[peaksLocation[i]]))
+                let gravityCal = checkSecondGravity(gravityYList[peaksLocation[i]], xGravity: gravityXList[peaksLocation[i]], yAcceleration: accelerationListY[peaksLocation[i]].getAcceleration(), xAcceleration: accelerationListX[peaksLocation[i]].getAcceleration(), angle: angle)
+                xVector += -(gravityCal.getHorizontalAcceleartion()) * weight
+                yVector += (gravityCal.getVerticalAcceleration()) * weight
                 sum = sum + weight
-                weight = weight + 0.3
+                if weight < 2
+                {
+                    weight = weight + 0.3
+                }
             }
         }
         xVector = xVector/sum
         yVector = yVector/sum
+        finalxVector = xVector
+        finalyVector = yVector
         var degree = CommonFunction.degreesFromRadians(atan2(xVector, yVector))
         degree = CommonFunction.checkDegree(degree)
         return degree
+    }
+    
+    public func checkSecondGravity(yGravity:Double,xGravity:Double,yAcceleration:Double,xAcceleration:Double,angle:Double) -> GravityCal
+    {
+        var gravityCal:GravityCal
+        if abs(yGravity) >= abs(xGravity)
+        {
+            gravityCal = GravityZY(angle: angle, hAcceleration: xAcceleration, vAcceleration: yAcceleration)
+        }
+        else
+        {
+            gravityCal = GravityZX(angle: angle, hAcceleration: xAcceleration, vAcceleration: yAcceleration)
+        }
+        return gravityCal
+    }
+    
+    public func getVector() -> (Double, Double) {
+        return (finalxVector,finalyVector)
     }
 }

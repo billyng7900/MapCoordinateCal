@@ -10,7 +10,7 @@ import Foundation
 
 public class PeakHelper
 {
-    private let peakThreshold = 2.69//based on testing
+    private let peakThreshold = 2.8//based on testing
     
     public func peakFinding(accelerationAbsList:[Acceleration]) -> [Int]
     {
@@ -81,27 +81,30 @@ public class PeakHelper
             let peak2Location = peaksLocation[i+1]
             var lowestPeak:Acceleration? = nil
             var lowestPeakLocation:Int? = nil
-            for var j=peak1Location+1; j<peak2Location;j++
+            if peak2Location - peak1Location < 30
             {
-                if accelerationAbsList[j].getAcceleration() < accelerationAbsList[j-1].getAcceleration() && accelerationAbsList[j].getAcceleration() < accelerationAbsList[j+1].getAcceleration()
+                for var j=peak1Location+1; j<peak2Location;j++
                 {
-                    if lowestPeak == nil
+                    if accelerationAbsList[j].getAcceleration() < accelerationAbsList[j-1].getAcceleration() && accelerationAbsList[j].getAcceleration() < accelerationAbsList[j+1].getAcceleration()
                     {
-                        lowestPeak = accelerationAbsList[j]
-                        lowestPeakLocation = j
-                    }
-                    else
-                    {
-                        if accelerationAbsList[j].getAcceleration() > lowestPeak?.getAcceleration()
+                        if lowestPeak == nil
                         {
                             lowestPeak = accelerationAbsList[j]
                             lowestPeakLocation = j
                         }
+                        else
+                        {
+                            if accelerationAbsList[j].getAcceleration() > lowestPeak?.getAcceleration()
+                            {
+                                lowestPeak = accelerationAbsList[j]
+                                lowestPeakLocation = j
+                            }
+                        }
                     }
                 }
+                lowestPeakList.append(lowestPeak!)
+                lowestPeakLocationList.append(lowestPeakLocation!)
             }
-            lowestPeakList.append(lowestPeak!)
-            lowestPeakLocationList.append(lowestPeakLocation!)
         }
         return lowestPeakLocationList
     }

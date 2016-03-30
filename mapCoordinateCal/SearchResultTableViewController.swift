@@ -14,7 +14,8 @@ class SearchResultTableViewController: UITableViewController{
     var resultItems: [MKMapItem] = []
     var mapView: MKMapView? = nil
     var searchResultList = [SearchResult]()
-    
+    var timer: NSTimer? = nil
+    var handleSearchMapDelegate:HandleMapSearch? = nil
     func getAddress(selectedItem:MKPlacemark) -> String
     {
         let firstSpace = (selectedItem.subThoroughfare != nil && selectedItem.thoroughfare != nil) ? " " : ""
@@ -36,6 +37,11 @@ class SearchResultTableViewController: UITableViewController{
         )
         return addressText
     }
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let selectedItem = searchResultList[indexPath.row]
+        handleSearchMapDelegate?.dropPinZommIn(selectedItem)
+        dismissViewControllerAnimated(true, completion: nil)
+    }
 
 }
 extension SearchResultTableViewController: UISearchResultsUpdating
@@ -46,7 +52,13 @@ extension SearchResultTableViewController: UISearchResultsUpdating
         {
             return
         }
-        let searchBarTextEncode = searchBarText.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
+        timer?.invalidate()
+        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "getText:", userInfo: searchBarText, repeats: false)
+    }
+    
+    func getText(timer: NSTimer)
+    {
+        let searchBarTextEncode = timer.userInfo!.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!
         let requestURL: NSURL = NSURL(string: "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=\(searchBarTextEncode)&key=AIzaSyC-Nx-rs9WG01HZ-peeCvq-NqPAMxILTAE")!
         let data=NSData(contentsOfURL:requestURL)
         do
@@ -77,7 +89,7 @@ extension SearchResultTableViewController: UISearchResultsUpdating
         let cell = tableView.dequeueReusableCellWithIdentifier("cell")!
         let selectedItem = searchResultList[indexPath.row]
         cell.textLabel?.text = selectedItem.description
-        cell.detailTextLabel?.text = selectedItem.placeId
+        cell.detailTextLabel?.text = selectedItem.formattedAddress
         return cell
     }
 }

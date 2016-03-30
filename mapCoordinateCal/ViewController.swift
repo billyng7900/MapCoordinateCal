@@ -21,13 +21,12 @@ class ViewController: UIViewController{
     @IBOutlet weak var magneticLabel: UILabel!
     @IBOutlet weak var altitudeLabel: UILabel!
     var searchResultViewController: UISearchController? = nil
+    var calculateLocation:CalculateLocation?
     
     var locationManager = CLLocationManager()
     let activityManager = CMMotionActivityManager()
     let defaults = NSUserDefaults.standardUserDefaults()
     let pedoMeter = CMPedometer()
-    var locationUpdateIsStopped = false
-    var coordinateWalkArray:[CLLocationCoordinate2D] = []
     var magneticBearing:NSNumber = 0
     var totalDistanceCount:Double = 0.0
     var overLay:MKOverlay?
@@ -37,10 +36,9 @@ class ViewController: UIViewController{
     var altitudeChange = Double()
     var stepCollection:StepCollection = StepCollection.getStepCollection()
     var bestGPSLocation = CLLocationCoordinate2D?()
-    var GPSAccuracyAllowRange:Double = 60
+    var GPSAccuracyAllowRange:Double = 35
     var GPSTimeAllowRange:Int = 15
     var placeType:String?
-    var allowNewAlgorithm:Bool = false
     var bearingCollection:BearingCollection = BearingCollection.getBearingCollection()
     var altitudeCollection = AltitudeCollection.getAltitudeCollection()
     var gpsCoordinateCollection = GPSCoordinateCollection.getGPSCoordinateCollection()
@@ -48,6 +46,7 @@ class ViewController: UIViewController{
     var enableTestLocationAlert = false
     var isFirstTimeLocated = true
     var calculateHeading = CalculateHeading.getCalculateHeading()
+    var selectedPin:SearchResult? = nil
     
     enum motion
     {
@@ -72,7 +71,7 @@ class ViewController: UIViewController{
         startMonitorActivity()
         setUpSearch()
         calculateHeading.startMotionUpdates()
-        testStepRecordAdd()
+        calculateLocation = CalculateLocation(mapView: mapView)
         if let savedPlaceType = defaults.stringForKey("Place Type")
         {
             placeType = savedPlaceType
@@ -96,9 +95,10 @@ class ViewController: UIViewController{
         searchResultViewController?.dimsBackgroundDuringPresentation = true
         definesPresentationContext = true
         searchResultTable.mapView = mapView
+        searchResultTable.handleSearchMapDelegate = self
     }
     
-    func testAltitude()
+    /*func testAltitude()
     {
         let timeNow = NSDate()
         altitudeCollection.appendAltitude(0.2, time: timeNow.dateByAddingTimeInterval(3))
@@ -118,12 +118,7 @@ class ViewController: UIViewController{
             dateSecond++
         }
         //gpsCoordinateCollection.findOutMostRecentAccurateLocation(GPSAccuracyAllowRange, timeLimit: NSDate().dateByAddingTimeInterval(-15))
-    }
-    
-    func applicationDidEnterBackground(application: UIApplication)
-    {
-        
-    }
+    }*/
     
     func revealRegionDetailsWithLongPressOnMap(sender: UILongPressGestureRecognizer)
     {
@@ -145,14 +140,14 @@ class ViewController: UIViewController{
         })
     }
     
-    func testNSDateAdd(string:String) -> NSDate
+    /*func testNSDateAdd(string:String) -> NSDate
     {
         let dateStringFormatter = NSDateFormatter()
         dateStringFormatter.dateFormat = "HH:mm:ss"
         let d = dateStringFormatter.dateFromString(string)
         return d!
     }
-    
+
     func testStepRecordAdd()
     {
         let timeNow = NSDate()
@@ -163,7 +158,7 @@ class ViewController: UIViewController{
         stepCollection.appendStepList(12, distance: 1, startDate: NSDate(), endDate: timeNow.dateByAddingTimeInterval(3), pace: nil, cadence: nil, bearing: 123)
         stepCollection.appendStepList(12, distance: 1, startDate: NSDate(), endDate: timeNow.dateByAddingTimeInterval(7), pace: nil, cadence: nil, bearing: 123)
     }
-
+*/
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -197,7 +192,6 @@ class ViewController: UIViewController{
     func recordBearing()
     {
         bearingCollection.appendBearingList(Double(magneticBearing), time: NSDate())
-        
     }
     
     func startAltimeter()
@@ -210,7 +204,6 @@ class ViewController: UIViewController{
                 {
                     self.altitudeChange = Double(data!.relativeAltitude) - self.lastAltitude
                     self.altitudeCollection.appendAltitude(self.altitudeChange, time: NSDate())
-                    self.altitudeLabel.text = "\(self.altitudeChange)"
                     self.lastAltitude = Double(data!.relativeAltitude)
                 }
                 })
@@ -229,12 +222,12 @@ class ViewController: UIViewController{
                         let pace = data!.currentPace != nil ? data!.currentPace : nil
                         let cadence = data!.currentCadence != nil ? data!.currentCadence : nil
                         let changeDistance = Double(data!.distance!) - self.totalDistanceCount
-                        if self.bearingCollection.isEmpty()
+                        if !self.bearingCollection.isEmpty() && changeDistance > 0
                         {
                             let bearingRecord = self.bearingCollection.mapBearingRecordFromDate(NSDate())
                             self.stepCollection.appendStepList(Int(data!.numberOfSteps), distance:changeDistance, startDate: data!.startDate, endDate: data!.endDate, pace: pace, cadence: cadence, bearing: 360 - Double(bearingRecord.getBearing()))
                             //self.distanceLabel.text = "\(data!.distance!)"
-                            if self.locationUpdateIsStopped
+                            if self.calculateLocation!.isLocationUpdateStopped()
                             {
                                 self.drawWalkingLine()
                             }
@@ -283,46 +276,18 @@ class ViewController: UIViewController{
         {
             bearing = 20
         }
-        if locationUpdateIsStopped
+        if calculateLocation!.isLocationUpdateStopped()
         {
             stepCollection.appendStepList(2, distance: 4, startDate: NSDate(), endDate: NSDate(), pace: nil, cadence: nil, bearing: bearing)
             drawWalkingLine()
         }
     }
     
-    
-    func addUserLastMapAnnotation()
-    {
-        removeAnnotationWithoutUserLocation()
-        let locationPin = MKPointAnnotation()
-        locationPin.coordinate = (bestGPSLocation)!
-        locationPin.title = "last accurate user location"
-        locationPin.subtitle = "This location is retrieved by GPS"
-        self.mapView.addAnnotation(locationPin)
-        
-    }
-    
-    func removeAnnotationWithoutUserLocation()
-    {
-        var annotationsToBeRemoved = [MKAnnotation]()
-        for annotation in self.mapView.annotations
-        {
-            if !(annotation is MKUserLocation)
-            {
-                annotationsToBeRemoved.append(annotation)
-            }
-        }
-        self.mapView.removeAnnotations(annotationsToBeRemoved)
-    }
-    
     @IBAction func searchLocation(sender: AnyObject) {
-        if locationUpdateIsStopped
+        if calculateLocation!.isLocationUpdateStopped()
         {
-            removeAnnotationWithoutUserLocation()
-            locationManager.startUpdatingLocation()
-            coordinateWalkArray = []
-            locationUpdateIsStopped = false
-            mapView.showsUserLocation = true
+            calculateLocation?.stopLocationCal()
+            //mapView.showsUserLocation = true
         }
         if let coordinate = mapView.userLocation.location?.coordinate {
             let region = MKCoordinateRegionMakeWithDistance(coordinate, 500, 500)
@@ -331,15 +296,13 @@ class ViewController: UIViewController{
     }
     
     @IBAction func stopUpdateLocation(sender: AnyObject) {
-        if !locationUpdateIsStopped
+        if !calculateLocation!.isLocationUpdateStopped()
         {
-            locationUpdateIsStopped = true
             bestGPSLocation = CLLocationCoordinate2DMake(22.336672, 114.174293)
-            addUserLastMapAnnotation()
-            locationStopedTime = NSDate()
-            mapView.showsUserLocation = false
-            var timer = NSTimer()
-            timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "repeatTimer", userInfo: nil, repeats: true)
+            calculateLocation?.startLocationCal(mapView.userLocation.coordinate, locationStoppedTime: NSDate())
+            //mapView.showsUserLocation = false
+            //var timer = NSTimer()
+            //timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "repeatTimer", userInfo: nil, repeats: true)
         }
     }
     
@@ -353,6 +316,7 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
     func locationManagerShouldDisplayHeadingCalibration(manager: CLLocationManager) -> Bool {
         return true
     }
+    
     func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
         if isFirstTimeLocated
         {
@@ -363,7 +327,6 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
         if !mapView.overlays.isEmpty
         {
             mapView.removeOverlays(mapView.overlays)
-            coordinateWalkArray = []
         }
     }
     
@@ -379,25 +342,23 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
             self.presentViewController(alertController, animated: true, completion: nil)
 
         }
-        if Double(newLocation.horizontalAccuracy) >= GPSAccuracyAllowRange && !locationUpdateIsStopped
+        if Double(newLocation.horizontalAccuracy) >= GPSAccuracyAllowRange && !calculateLocation!.isLocationUpdateStopped()
         {
             let lastAccurateLocation = gpsCoordinateCollection.findOutMostRecentAccurateLocation(GPSAccuracyAllowRange, timeLimit: NSDate().dateByAddingTimeInterval(-15),timeUpLimit: NSDate())
             if lastAccurateLocation != nil
             {
                 bestGPSLocation = CLLocationCoordinate2DMake((lastAccurateLocation?.latitude)!, (lastAccurateLocation?.longitude)!)
                 locationStopedTime = (lastAccurateLocation?.time)!
-                locationUpdateIsStopped = true
-                addUserLastMapAnnotation()
-                mapView.showsUserLocation = false
+                calculateLocation?.startLocationCal(bestGPSLocation!, locationStoppedTime: locationStopedTime)
+                //mapView.showsUserLocation = false
             }
         }
         else if Double(newLocation.horizontalAccuracy) < GPSAccuracyAllowRange
         {
-            if locationUpdateIsStopped
+            if calculateLocation!.isLocationUpdateStopped()
             {
-                locationUpdateIsStopped = false
-                mapView.showsUserLocation = true
-                removeAnnotationWithoutUserLocation()
+                //calculateLocation?.stopLocationCal()
+                //mapView.showsUserLocation = true
             }
         }
     }
@@ -409,60 +370,13 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
     
     func drawWalkingLine()
     {
-        coordinateWalkArray = []
         mapView.removeOverlays(mapView.overlays)
-        convertStepListToCoordinate()
+        var coordinateWalkArray:[CLLocationCoordinate2D] = (calculateLocation?.convertStepListToCoordinate())!
         if !coordinateWalkArray.isEmpty
         {
             let myPolyLine = MKPolyline(coordinates: &coordinateWalkArray , count: coordinateWalkArray.count)
             mapView.addOverlay(myPolyLine)
         }
-    }
-    
-    func convertStepListToCoordinate()
-    {
-        let stepListAfterStopped = stepCollection.findStepRecordAfterDate(locationStopedTime)
-        for step in stepListAfterStopped
-        {
-            var oldLocation: CLLocationCoordinate2D
-            if coordinateWalkArray.count == 0
-            {
-                oldLocation = (bestGPSLocation)!
-            }
-            else
-            {
-                oldLocation = coordinateWalkArray[coordinateWalkArray.count-1]
-            }
-            let newCoord = getNextCoordinate(oldLocation, distanceMeters: pythThm(step.altitudeChange, c: step.distance), bearing: step.bearing)
-            coordinateWalkArray.append(newCoord)
-        }
-    }
-    
-    func getNextCoordinate(orginCoord:CLLocationCoordinate2D, distanceMeters:Double,bearing:Double)->CLLocationCoordinate2D
-    {
-        let distanceInRadians:Double = distanceMeters/6371000.0;//earth's radius
-        let bearingInRadians:Double = CommonFunction.radiansFromDegrees(bearing);
-        let orginCoordLatitudeRadians = CommonFunction.radiansFromDegrees(orginCoord.latitude)
-        let orginCoordLongitudeRadians = CommonFunction.radiansFromDegrees(orginCoord.longitude)
-        //print(orginCoord.latitude)
-        //print(orginCoord.longitude)
-        //haversine formula
-        let newCoordLatitudeRadains = asin(sin(orginCoordLatitudeRadians) * cos(distanceInRadians) + cos(orginCoordLatitudeRadians) * sin(distanceInRadians) * cos(bearingInRadians))
-        var newCoordLongitudeRadians = orginCoordLongitudeRadians + atan2(sin(bearingInRadians) * sin(distanceInRadians) * cos(orginCoordLongitudeRadians), cos(distanceInRadians) - sin(orginCoordLongitudeRadians) * sin(orginCoordLongitudeRadians))
-        
-        newCoordLongitudeRadians = fmod((newCoordLongitudeRadians + 3*M_PI),(2*M_PI)) - M_PI
-        let newCoord: CLLocationCoordinate2D = CLLocationCoordinate2DMake(CLLocationDegrees(CommonFunction.degreesFromRadians(newCoordLatitudeRadains)), CLLocationDegrees(CommonFunction.degreesFromRadians(newCoordLongitudeRadians)))
-        //print(degreesFromRadians(newCoordLatitudeRadains))
-        //(degreesFromRadians(newCoordLongitudeRadians))
-        return newCoord
-        
-    }
-    
-    func pythThm(b:Double,c:Double) -> Double
-    {
-        let result = (c*c)-(b*b)
-        let a = sqrt(result)
-        return a
     }
     
     func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer! {
@@ -478,21 +392,12 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
     }
     
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
-        var annotationView = mapView.dequeueReusableAnnotationViewWithIdentifier("UserDotLocation")
         if annotation.isKindOfClass(MKUserLocation)
         {
             return nil
         }
-        if annotationView == nil
-        {
-            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "UserDotLocation")
-            annotationView!.canShowCallout = true
-            annotationView!.image = UIImage(named: "calBlueDot.png")
-        }
-        else
-        {
-            annotationView!.annotation = annotation
-        }
+        let annotationView = UserLastAnnotationView(annotation: annotation, reuseIdentifier: "annotation")
+        annotationView.canShowCallout = true
         return annotationView
     }
 }
@@ -540,8 +445,8 @@ extension ViewController
 
 extension ViewController:CalculateHeadingDelegate
 {
-    func calculateHeading(calculateHeading: CalculateHeadingProtocol, didUpdateHeadingValue: Double) {
-        distanceLabel.text = "\(didUpdateHeadingValue)"
+    func calculateHeading(calculateHeading: CalculateHeadingProtocol, didUpdateHeadingValue: Double, startTime:NSDate) {
+        
     }
     
     func calculateHeading(CalculateHeading: CalculateHeadingProtocol, didRotatedDevice: Bool) {
@@ -550,7 +455,7 @@ extension ViewController:CalculateHeadingDelegate
     
     func checkCorrectedHeading(var correctedHeading:Double) -> Double
     {
-        if correctedHeading <= 25 && correctedHeading >= 335
+        if correctedHeading <= 15 && correctedHeading >= 345
         {
             correctedHeading = 0
         }
@@ -558,15 +463,33 @@ extension ViewController:CalculateHeadingDelegate
         {
             correctedHeading = 90
         }
-        else if correctedHeading <= 205 && correctedHeading >= 155
+        else if correctedHeading <= 195 && correctedHeading >= 165
         {
             correctedHeading = 180
         }
-        else if correctedHeading <= 295 && correctedHeading >= 245
+        else if correctedHeading <= 285 && correctedHeading >= 255
         {
             correctedHeading = 270
         }
         return correctedHeading
+    }
+    func calculateHead(calculateHeading: CalculateHeadingProtocol, didVectorUpdated: Double, secondVector: Double, headingValue:Double) {
+        altitudeLabel.text = "\(secondVector)"
+        magneticLabel.text = "\(didVectorUpdated)"
+        distanceLabel.text = "\(headingValue)"
+    }
+}
+
+extension ViewController: HandleMapSearch
+{
+    func dropPinZommIn(result: SearchResult) {
+        selectedPin = result
+        let coordinate = result.getPlaceCoordinate()
+        let annotation = Annotation(coordinate: coordinate, title: result.description, subtitle: result.formattedAddress, type: AnnotationType.AnnotationDefault)
+        mapView.addAnnotation(annotation)
+        let span = MKCoordinateSpanMake(0.005, 0.005)
+        let region = MKCoordinateRegionMake(coordinate, span)
+        mapView.setRegion(region, animated: true)
     }
 }
 

@@ -34,6 +34,10 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
     private var gravityXList = [Double]()
     private var gravityYList = [Double]()
     private var gravityZList = [Double]()
+    private var updatedCount = 0
+    private var previousHeading = 0
+    private var startTime = NSDate?()
+    private var isFirstPeakDetected = false
     var delegate: CalculateHeadingDelegate?
     
     override init()
@@ -51,6 +55,7 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
         if motionManager.deviceMotionAvailable
         {
             motionManager.deviceMotionUpdateInterval = deviceMotionUpdateInterval//25Hz
+            timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "checkPeak", userInfo: nil, repeats: true)
             motionManager.startDeviceMotionUpdatesToQueue(NSOperationQueue.mainQueue(), withHandler: {(data,error) -> Void in
                 let timeNow = NSDate()
                 let accelerationX = (data?.userAcceleration.x)! * self.gravity
@@ -73,21 +78,21 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
                     if !self.isRemoving
                     {
                         self.accelerationAbsList.append(Acceleration(acceleration: self.previousAbs!, time: timeNow))
-                        self.accelerationXList.append(Acceleration(acceleration: accelerationX, time: timeNow))
-                        self.accelerationYList.append(Acceleration(acceleration: accelerationY, time: timeNow))
-                        self.accelerationZList.append(Acceleration(acceleration: accelerationZ, time: timeNow))
+                        self.accelerationXList.append(Acceleration(acceleration: self.previousX!, time: timeNow))
+                        self.accelerationYList.append(Acceleration(acceleration: self.previousY!, time: timeNow))
+                        self.accelerationZList.append(Acceleration(acceleration: self.previousZ!, time: timeNow))
                         self.attitudeList.append(Attitude(attitude: (data?.attitude)!, time: timeNow))
                         self.gravityX = (data?.gravity.x)!
-                        self.gravityXList.append(self.gravityX!)
+                        self.gravityXList.append(self.gravityX! * self.gravity)
                         self.gravityY = (data?.gravity.y)!
-                        self.gravityYList.append(self.gravityY!)
+                        self.gravityYList.append(self.gravityY! * self.gravity)
                         self.gravityZ = (data?.gravity.z)!
-                        self.gravityZList.append(self.gravityZ!)
+                        self.gravityZList.append(self.gravityZ! * self.gravity)
                     }
                 }
             })
         }
-        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "checkPeak", userInfo: nil, repeats: true)
+        
     }
     
     public func stopUpdateMotionUpdates()
@@ -106,8 +111,10 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
         let gravityXWhenChecking = gravityX
         let gravityYWhenChecking = gravityY
         let gravityZWhenChecking = gravityZ
+        timer.invalidate()
         if accelerationAbsList.isEmpty
         {
+            timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "checkPeak", userInfo: nil, repeats: true)
             return
         }
         var isRotated = false
@@ -126,7 +133,8 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
             attitudeList.removeAll()
             delegate?.calculateHeading(self, didRotatedDevice: true)
             isRemoving = false
-            
+            updatedCount == 0
+            isFirstPeakDetected = false
         }
         else
         {
@@ -134,40 +142,26 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
             let peakLocation = peakHelper.peakFinding(accelerationAbsList)
             if peakLocation.count > 1
             {
+                if !isFirstPeakDetected
+                {
+                    isFirstPeakDetected = true
+                    startTime = NSDate()
+                }
                 let gravity = decideGravityDirection(gravityXWhenChecking!, y: gravityYWhenChecking!, z: gravityZWhenChecking!)
                 
                 let lowestPeakLocation = peakHelper.findLowestPeak(accelerationAbsList, peaksLocation: peakLocation)
                 var degree = Double()
-                if let gravityX = gravity as? GravityX
+                    degree = gravity.getDegree(lowestPeakLocation,peaksLocation: peakLocation, accelerationListX: accelerationXList, accelerationListY: accelerationYList, accelerationListZ: accelerationZList, gravityXList: gravityXList, gravityYList: gravityYList, gravityZList: gravityZList)
+                let (xVector,yVector) = gravity.getVector()
+                delegate?.calculateHead(self, didVectorUpdated: xVector, secondVector: yVector, headingValue: degree)
+                updatedCount++
+                if updatedCount == 5
                 {
-                    degree = gravityX.getDegree(lowestPeakLocation, accelerationListY: accelerationYList, accelerationListX: accelerationZList,gravity1List:gravityZList,gravity2List:gravityYList)
+                    delegate?.calculateHeading(self, didUpdateHeadingValue: degree, startTime: startTime!)
                 }
-                else if let gravityY = gravity as? GravityY
-                {
-                    degree = gravityY.getDegree(lowestPeakLocation, accelerationListY: accelerationZList, accelerationListX: accelerationXList,gravity1List:gravityZList,gravity2List:gravityYList)
-                }
-                else if let gravityZ = gravity as? GravityZ
-                {
-                    degree = gravityZ.getDegree(lowestPeakLocation, accelerationListY: accelerationYList, accelerationListX: accelerationXList,gravity1List:gravityZList,gravity2List:gravityYList)
-                }
-                //var degreeList = [Double]()
-                /*var xVector = Double()
-                var yVector = Double()
-                for var i=0;i<lowestPeakLocation.count;i++
-                {
-                    xVector += accelerationXList[lowestPeakLocation[i]].getAcceleration()
-                    yVector += accelerationYList[lowestPeakLocation[i]].getAcceleration()
-                }
-                xVector = xVector/Double(lowestPeakLocation.count)
-                yVector = yVector/Double(lowestPeakLocation.count)
-                var degree = CommonFunction.degreesFromRadians(atan2(xVector, yVector))
-                if degree < 0
-                {
-                    degree = 360 + degree
-                }*/
-                delegate?.calculateHeading(self, didUpdateHeadingValue: degree)
             }
         }
+        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "checkPeak", userInfo: nil, repeats: true)
     }
     
     private func sorting(v1:Double,v2:Double) -> Bool
@@ -269,7 +263,7 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
         let Absy = abs(y)
         let Absz = abs(z)
         var gravity:Gravity
-        if Absx > Absy && x > Absz
+        if Absx > Absy && Absx > Absz
         {
             gravity = GravityX(isPositive:x > 0)
         }

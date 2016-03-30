@@ -21,6 +21,20 @@ class UserLastAnnotationView: MKAnnotationView
     
     override init(annotation: MKAnnotation?, reuseIdentifier: String?) {
         super.init(annotation: annotation, reuseIdentifier: reuseIdentifier)
-        image = UIImage(named: "sf-ios-canvas-knob-blue@2x.png")
+        let customAnnotation = self.annotation as! Annotation
+        var orginalImage = UIImage()
+        switch(customAnnotation.type)
+        {
+        case .AnnotationDefault:
+            orginalImage = UIImage(named: "pin")!
+        case .AnnotationUserLastLocation:
+            orginalImage = UIImage(named: "calBlueDot")!
+        }
+        let size = CGSize(width: 32, height: 32)
+        UIGraphicsBeginImageContext(size)
+        orginalImage.drawInRect(CGRectMake(0, 0, size.width, size.height))
+        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        image = resizedImage
     }
 }

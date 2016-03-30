@@ -16,6 +16,7 @@ protocol CalculateHeadingProtocol
 
 protocol CalculateHeadingDelegate
 {
-    func calculateHeading(calculateHeading:CalculateHeadingProtocol, didUpdateHeadingValue: Double)
+    func calculateHeading(calculateHeading:CalculateHeadingProtocol, didUpdateHeadingValue: Double, startTime:NSDate)
     func calculateHeading(CalculateHeading:CalculateHeadingProtocol, didRotatedDevice:Bool)
+    func calculateHead(calculateHeading:CalculateHeadingProtocol, didVectorUpdated:Double, secondVector:Double, headingValue: Double)
 }
