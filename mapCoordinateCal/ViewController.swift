@@ -12,14 +12,16 @@ import MapKit
 import CoreLocation
 import CoreMotion
 
+enum PlaceType
+{
+    case GreenLine
+    case GreenDot
+}
+
 class ViewController: UIViewController{
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var stopButton: UIBarButtonItem!
     @IBOutlet weak var searchButton: UIToolbar!
-    @IBOutlet weak var distanceLabel: UILabel!
-    @IBOutlet weak var accuracyLabel: UILabel!
-    @IBOutlet weak var magneticLabel: UILabel!
-    @IBOutlet weak var altitudeLabel: UILabel!
     var searchResultViewController: UISearchController? = nil
     var calculateLocation:CalculateLocation?
     
@@ -30,7 +32,7 @@ class ViewController: UIViewController{
     var magneticBearing:NSNumber = 0
     var totalDistanceCount:Double = 0.0
     var overLay:MKOverlay?
-    var timersecond = 0;
+    var timersecond = 0 // for testing purpose
     var altimeter = CMAltimeter()
     var lastAltitude:Double = 0.0
     var altitudeChange = Double()
@@ -42,11 +44,16 @@ class ViewController: UIViewController{
     var bearingCollection:BearingCollection = BearingCollection.getBearingCollection()
     var altitudeCollection = AltitudeCollection.getAltitudeCollection()
     var gpsCoordinateCollection = GPSCoordinateCollection.getGPSCoordinateCollection()
+    var correctionHeadingCollection = CorrectionHeadingCollection.getCorrectionHeadingCollection()
     var locationStopedTime:NSDate = NSDate()
     var enableTestLocationAlert = false
     var isFirstTimeLocated = true
     var calculateHeading = CalculateHeading.getCalculateHeading()
     var selectedPin:SearchResult? = nil
+    var isHeadingCalculationEnabled = false
+    var timerForHeadingCalculation:NSTimer? = nil
+    var isAllowedToDrawLine = false
+    var calculatedLocation:CLLocationCoordinate2D? = nil
     
     enum motion
     {
@@ -70,7 +77,6 @@ class ViewController: UIViewController{
         startAltimeter()
         startMonitorActivity()
         setUpSearch()
-        calculateHeading.startMotionUpdates()
         calculateLocation = CalculateLocation(mapView: mapView)
         if let savedPlaceType = defaults.stringForKey("Place Type")
         {
@@ -133,9 +139,26 @@ class ViewController: UIViewController{
         geoCoder.reverseGeocodeLocation(location, completionHandler: {(placemarks, error) -> Void in
             var placeMark:CLPlacemark!
             placeMark = placemarks?.first
-            if let locationName = placeMark.addressDictionary!["Name"] as? NSString
+            if let locationName = placeMark.addressDictionary!["Name"] as? String
             {
-                
+                var annotationsToBeRemoved = [MKAnnotation]()
+                for annotation in self.mapView.annotations
+                {
+                    if !(annotation is MKUserLocation)
+                    {
+                        if let customAnnotation = annotation as? Annotation
+                        {
+                            if customAnnotation.type == AnnotationType.AnnotationDefault
+                            {
+                                annotationsToBeRemoved.append(annotation)
+                            }
+                        }
+                    }
+                }
+                self.mapView.removeAnnotations(annotationsToBeRemoved)
+                let coordinate = placeMark.location?.coordinate
+                let annotation = Annotation(coordinate: coordinate!, title: locationName, subtitle: placeMark.country!, type: AnnotationType.AnnotationDefault)
+                self.mapView.addAnnotation(annotation)
             }
         })
     }
@@ -219,18 +242,24 @@ class ViewController: UIViewController{
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     if(error == nil)
                     {
+                        if !self.isHeadingCalculationEnabled
+                        {
+                            self.isHeadingCalculationEnabled = true
+                            self.calculateHeading.startMotionUpdates()
+                        }
                         let pace = data!.currentPace != nil ? data!.currentPace : nil
                         let cadence = data!.currentCadence != nil ? data!.currentCadence : nil
                         let changeDistance = Double(data!.distance!) - self.totalDistanceCount
                         if !self.bearingCollection.isEmpty() && changeDistance > 0
                         {
+                            self.timerForHeadingCalculation?.invalidate()
                             let bearingRecord = self.bearingCollection.mapBearingRecordFromDate(NSDate())
                             self.stepCollection.appendStepList(Int(data!.numberOfSteps), distance:changeDistance, startDate: data!.startDate, endDate: data!.endDate, pace: pace, cadence: cadence, bearing: 360 - Double(bearingRecord.getBearing()))
-                            //self.distanceLabel.text = "\(data!.distance!)"
-                            if self.calculateLocation!.isLocationUpdateStopped()
+                            if self.calculateLocation!.isLocationUpdateStopped() && self.isAllowedToDrawLine
                             {
                                 self.drawWalkingLine()
                             }
+                            self.timerForHeadingCalculation = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: "stopHeadingCalculation", userInfo: nil, repeats: false)
                         }
                         self.totalDistanceCount = Double(data!.distance!)
                     }
@@ -240,6 +269,16 @@ class ViewController: UIViewController{
 
     }
     
+    func stopHeadingCalculation()
+    {
+        if calculateLocation!.isLocationUpdateStopped()
+        {
+            drawWalkingLine()
+        }
+        isHeadingCalculationEnabled = false
+        calculateHeading.stopUpdateMotionUpdates()
+    }
+    
     func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         
         if status == .AuthorizedWhenInUse
@@ -247,6 +286,33 @@ class ViewController: UIViewController{
             manager.startUpdatingLocation()
             manager.startUpdatingHeading()
             mapView.showsUserLocation = true
+        }
+        else
+        {
+            
+        }
+    }
+    
+    func checkLocationService()
+    {
+        if CLLocationManager.locationServicesEnabled()
+        {
+            switch(CLLocationManager.authorizationStatus())
+            {
+            case .NotDetermined, .Restricted, .Denied:
+                let settingAction = UIAlertAction(title: "Setting", style: .Default, handler: {(_) -> Void in
+                    let settingURL = NSURL(string: "prefs:root=LOCATION_SERVICES")
+                    if let url = settingURL
+                    {
+                        UIApplication.sharedApplication().openURL(url)
+                    }
+                })
+                let alertController = UIAlertController(title: "Location Service Denied", message: "Unable to determine your location", preferredStyle: UIAlertControllerStyle.Alert)
+                alertController.addAction(settingAction)
+                alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil))
+                self.presentViewController(alertController, animated: true, completion: nil)
+            case .AuthorizedAlways, .AuthorizedWhenInUse: break
+            }
         }
         else
         {
@@ -284,14 +350,24 @@ class ViewController: UIViewController{
     }
     
     @IBAction func searchLocation(sender: AnyObject) {
+        checkLocationService()
         if calculateLocation!.isLocationUpdateStopped()
         {
+            if calculatedLocation != nil
+            {
+                //calculatedLocation = nil
+                let region = MKCoordinateRegionMakeWithDistance(calculatedLocation!, 300, 300)
+                mapView.setRegion(region, animated: true)
+            }
             calculateLocation?.stopLocationCal()
-            //mapView.showsUserLocation = true
+            mapView.showsUserLocation = true
         }
-        if let coordinate = mapView.userLocation.location?.coordinate {
-            let region = MKCoordinateRegionMakeWithDistance(coordinate, 500, 500)
-            mapView.setRegion(region, animated: true)
+        else
+        {
+            if let coordinate = mapView.userLocation.location?.coordinate {
+                let region = MKCoordinateRegionMakeWithDistance(coordinate, 300, 300)
+                mapView.setRegion(region, animated: true)
+            }
         }
     }
     
@@ -333,7 +409,6 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let newLocation:CLLocation = locations.last!
         gpsCoordinateCollection.appendGPSCoordinateList(newLocation.coordinate.longitude, latitude: newLocation.coordinate.latitude, accuracy: newLocation.horizontalAccuracy, time: newLocation.timestamp)
-        accuracyLabel.text = "\(newLocation.horizontalAccuracy)"
         //distanceLabel.text = "\(newLocation.course)"
         if enableTestLocationAlert
         {
@@ -359,24 +434,65 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
             {
                 //calculateLocation?.stopLocationCal()
                 //mapView.showsUserLocation = true
+                //calculatedLocation = nil
+                //isHeadingCalculationEnabled = false
+                //calculateHeading.stopUpdateMotionUpdates()
             }
         }
     }
     
     func locationManager(manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        magneticLabel.text = "\(newHeading.trueHeading)"
         magneticBearing = newHeading.trueHeading
     }
     
     func drawWalkingLine()
     {
-        mapView.removeOverlays(mapView.overlays)
+        
         var coordinateWalkArray:[CLLocationCoordinate2D] = (calculateLocation?.convertStepListToCoordinate())!
+        calculatedLocation = coordinateWalkArray.last
         if !coordinateWalkArray.isEmpty
         {
-            let myPolyLine = MKPolyline(coordinates: &coordinateWalkArray , count: coordinateWalkArray.count)
-            mapView.addOverlay(myPolyLine)
+            if placeType == "Green Line"
+            {
+                mapView.removeOverlays(mapView.overlays)
+                let myPolyLine = MKPolyline(coordinates: &coordinateWalkArray , count: coordinateWalkArray.count)
+                mapView.addOverlay(myPolyLine)
+            }
+            else
+            {
+                mapView.removeOverlays(mapView.overlays)
+                removeCalPin()
+                drawGreenDot(calculatedLocation!)
+                let myCircle = MKCircle(centerCoordinate: calculatedLocation!, radius: 40)
+                mapView.addOverlay(myCircle)
+            }
         }
+    }
+    
+    func drawGreenDot(calLocation:CLLocationCoordinate2D)
+    {
+        let calPin = Annotation(coordinate: calLocation, title: "Calculate User Location", subtitle: "This Location is calculated by the algorithm", type: AnnotationType.AnnotationCalUserLocation)
+        calPin.coordinate = (calLocation)
+        self.mapView.addAnnotation(calPin)
+    }
+    
+    func removeCalPin()
+    {
+        var annotationsToBeRemoved = [MKAnnotation]()
+        for annotation in self.mapView.annotations
+        {
+            if !(annotation is MKUserLocation)
+            {
+                if let customAnnotation = annotation as? Annotation
+                {
+                    if customAnnotation.type == AnnotationType.AnnotationCalUserLocation
+                    {
+                        annotationsToBeRemoved.append(annotation)
+                    }
+                }
+            }
+        }
+        self.mapView.removeAnnotations(annotationsToBeRemoved)
     }
     
     func mapView(mapView: MKMapView, rendererForOverlay overlay: MKOverlay) -> MKOverlayRenderer! {
@@ -387,6 +503,14 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
             lineView.alpha = 0.4
             lineView.lineWidth = 5
             return lineView
+        }
+        else if overlay is MKCircle
+        {
+            let circleView = MKCircleRenderer(overlay: overlay)
+            circleView.fillColor = UIColor.greenColor()
+            circleView.alpha = 0.2
+            circleView
+            return circleView
         }
         return nil
     }
@@ -446,43 +570,67 @@ extension ViewController
 extension ViewController:CalculateHeadingDelegate
 {
     func calculateHeading(calculateHeading: CalculateHeadingProtocol, didUpdateHeadingValue: Double, startTime:NSDate) {
-        
-    }
-    
-    func calculateHeading(CalculateHeading: CalculateHeadingProtocol, didRotatedDevice: Bool) {
-        //do nothing
-    }
-    
-    func checkCorrectedHeading(var correctedHeading:Double) -> Double
-    {
-        if correctedHeading <= 15 && correctedHeading >= 345
+        let heading = checkCorrectedHeading(didUpdateHeadingValue)
+        correctionHeadingCollection.appendCorrectionHeading(heading, startTime: startTime)
+        if calculateLocation!.isLocationUpdateStopped()
         {
-            correctedHeading = 0
+            drawWalkingLine()
         }
-        else if correctedHeading <= 115 && correctedHeading >= 65
+        isAllowedToDrawLine = true
+    }
+    
+    func calculateHeading(CalculateHeading: CalculateHeadingProtocol, didRotatedDevice isAccurateHeadPushed: Bool, previousHeading: Double, previousStartTime:NSDate) {
+        isAllowedToDrawLine = false
+        if !isAccurateHeadPushed
         {
-            correctedHeading = 90
+            correctionHeadingCollection.appendCorrectionHeading(previousHeading, startTime: previousStartTime)
+        }
+    }
+    
+    func checkCorrectedHeading(correctedHeading:Double) -> Double
+    {
+        var finalHeading = correctedHeading
+        if correctedHeading <= 15 || correctedHeading >= 345
+        {
+            finalHeading = 0
+        }
+        else if correctedHeading <= 105 && correctedHeading >= 75
+        {
+            finalHeading = 90
         }
         else if correctedHeading <= 195 && correctedHeading >= 165
         {
-            correctedHeading = 180
+            finalHeading = 180
         }
         else if correctedHeading <= 285 && correctedHeading >= 255
         {
-            correctedHeading = 270
+            finalHeading = 270
         }
-        return correctedHeading
+        return finalHeading
     }
     func calculateHead(calculateHeading: CalculateHeadingProtocol, didVectorUpdated: Double, secondVector: Double, headingValue:Double) {
-        altitudeLabel.text = "\(secondVector)"
-        magneticLabel.text = "\(didVectorUpdated)"
-        distanceLabel.text = "\(headingValue)"
     }
 }
 
 extension ViewController: HandleMapSearch
 {
     func dropPinZommIn(result: SearchResult) {
+        var annotationsToBeRemoved = [MKAnnotation]()
+        for annotation in self.mapView.annotations
+        {
+            if !(annotation is MKUserLocation)
+            {
+                if let customAnnotation = annotation as? Annotation
+                {
+                    if customAnnotation.type == AnnotationType.AnnotationDefault
+                    {
+                        annotationsToBeRemoved.append(annotation)
+                    }
+                }
+            }
+        }
+        self.mapView.removeAnnotations(annotationsToBeRemoved)
+
         selectedPin = result
         let coordinate = result.getPlaceCoordinate()
         let annotation = Annotation(coordinate: coordinate, title: result.description, subtitle: result.formattedAddress, type: AnnotationType.AnnotationDefault)

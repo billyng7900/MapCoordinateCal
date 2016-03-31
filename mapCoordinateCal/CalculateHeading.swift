@@ -35,7 +35,7 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
     private var gravityYList = [Double]()
     private var gravityZList = [Double]()
     private var updatedCount = 0
-    private var previousHeading = 0
+    private var previousHeading:Double = 0
     private var startTime = NSDate?()
     private var isFirstPeakDetected = false
     var delegate: CalculateHeadingDelegate?
@@ -98,6 +98,11 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
     public func stopUpdateMotionUpdates()
     {
         motionManager.stopAccelerometerUpdates()
+        accelerationAbsList.removeAll()
+        accelerationXList.removeAll()
+        accelerationYList.removeAll()
+        accelerationZList.removeAll()
+        attitudeList.removeAll()
         timer.invalidate()
     }
     
@@ -131,16 +136,24 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
             accelerationYList.removeAll()
             accelerationZList.removeAll()
             attitudeList.removeAll()
-            delegate?.calculateHeading(self, didRotatedDevice: true)
+            if updatedCount >= 5
+            {
+                delegate?.calculateHeading(self, didRotatedDevice: true, previousHeading: previousHeading,previousStartTime: startTime!)
+            }
+            else
+            {
+                delegate?.calculateHeading(self, didRotatedDevice: false, previousHeading: previousHeading,previousStartTime: startTime!)
+            }
             isRemoving = false
-            updatedCount == 0
+            updatedCount = 0
             isFirstPeakDetected = false
+            startTime = NSDate()
         }
         else
         {
             let peakHelper = PeakHelper()
             let peakLocation = peakHelper.peakFinding(accelerationAbsList)
-            if peakLocation.count > 1
+            if peakLocation.count >= 1
             {
                 if !isFirstPeakDetected
                 {
@@ -158,6 +171,7 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
                 if updatedCount == 5
                 {
                     delegate?.calculateHeading(self, didUpdateHeadingValue: degree, startTime: startTime!)
+                    previousHeading = degree
                 }
             }
         }

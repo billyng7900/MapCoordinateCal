@@ -13,6 +13,7 @@ import MapKit
 public class CalculateLocation
 {
     var stepCollection = StepCollection.getStepCollection()
+    var correctionHeadingCollection = CorrectionHeadingCollection.getCorrectionHeadingCollection()
     var mapView:MKMapView
     var lastGPSLocation:CLLocationCoordinate2D?
     var locationUpdateisStopped = false
@@ -63,7 +64,13 @@ public class CalculateLocation
         {
             if !(annotation is MKUserLocation)
             {
-                annotationsToBeRemoved.append(annotation)
+                if let customAnnotation = annotation as? Annotation
+                {
+                    if customAnnotation.type != AnnotationType.AnnotationDefault
+                    {
+                        annotationsToBeRemoved.append(annotation)
+                    }
+                }
             }
         }
         self.mapView.removeAnnotations(annotationsToBeRemoved)
@@ -77,7 +84,7 @@ public class CalculateLocation
         for step in stepListAfterStopped
         {
             var oldLocation: CLLocationCoordinate2D
-            
+            let correctedHeading = correctionHeadingCollection.mapCorrectionHeadingtoStepRecord(step.endDate)
             if coordinateWalkArray.count == 0
             {
                 oldLocation = (lastGPSLocation)!
@@ -87,7 +94,17 @@ public class CalculateLocation
                 oldLocation = coordinateWalkArray[coordinateWalkArray.count-1]
             }
             var newCoord:CLLocationCoordinate2D
-            newCoord = getNextCoordinate(oldLocation, distanceMeters: CommonFunction.pythThm(step.altitudeChange, c: step.distance), bearing: step.bearing)
+            let finalBearing = CommonFunction.checkDegreeExceeds(step.bearing + correctedHeading)
+            var actualDistance:Double
+            if step.altitudeChange < step.distance
+            {
+                actualDistance = CommonFunction.pythThm(step.altitudeChange, c: step.distance)
+            }
+            else
+            {
+                actualDistance = 0
+            }
+            newCoord = getNextCoordinate(oldLocation, distanceMeters: actualDistance, bearing: finalBearing)
             coordinateWalkArray.append(newCoord)
         }
         return coordinateWalkArray

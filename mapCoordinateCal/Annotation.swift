@@ -15,6 +15,7 @@ enum AnnotationType: Int
 {
     case AnnotationDefault = 0
     case AnnotationUserLastLocation
+    case AnnotationCalUserLocation
 }
 
 public class Annotation:NSObject,MKAnnotation

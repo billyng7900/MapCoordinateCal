@@ -56,4 +56,9 @@ public class StepCollection
         }
         return stepRecordAfterDate
     }
+    
+    func emptyStepList()
+    {
+        stepList.removeAll()
+    }
 }

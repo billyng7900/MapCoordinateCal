@@ -15,6 +15,7 @@
 		664E6C0B1C5CBA56006A21DF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 664E6C0A1C5CBA56006A21DF /* ViewController.swift */; };
 		664E6C0E1C5CBA56006A21DF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 664E6C0C1C5CBA56006A21DF /* Main.storyboard */; };
 		664E6C101C5CBA56006A21DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 664E6C0F1C5CBA56006A21DF /* Assets.xcassets */; };
+		665192461CAC40FF00FC89CE /* calGreenDot.png in Resources */ = {isa = PBXBuildFile; fileRef = 665192451CAC40FF00FC89CE /* calGreenDot.png */; };
 		666DD4CE1C9162C000534E6F /* CommonFunction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666DD4CD1C9162C000534E6F /* CommonFunction.swift */; };
 		667757C21CA3A999004FF6E0 /* CalculateLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667757C11CA3A999004FF6E0 /* CalculateLocation.swift */; };
 		667AA0621C94700F00B1E3FB /* Altitude.swift in Sources */ = {isa = PBXBuildFile; fileRef = 667AA0611C94700F00B1E3FB /* Altitude.swift */; };
@@ -64,6 +65,7 @@
 		66F880B11CA6DFFE00727C44 /* GravityXY.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F880B01CA6DFFE00727C44 /* GravityXY.swift */; };
 		66FE3E0C1C9D76D00029094F /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FE3E0B1C9D76CF0029094F /* SearchResult.swift */; };
 		66FF7CC81CABC12800C7BC26 /* CorrectionHeading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FF7CC71CABC12800C7BC26 /* CorrectionHeading.swift */; };
+		66FF7CCA1CABD7C200C7BC26 /* CorrectionHeadingCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FF7CC91CABD7C200C7BC26 /* CorrectionHeadingCollection.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -77,6 +79,7 @@
 		664E6C0D1C5CBA56006A21DF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		664E6C0F1C5CBA56006A21DF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		664E6C141C5CBA56006A21DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		665192451CAC40FF00FC89CE /* calGreenDot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = calGreenDot.png; path = ../../../Downloads/calGreenDot.png; sourceTree = "<group>"; };
 		666DD4CD1C9162C000534E6F /* CommonFunction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonFunction.swift; sourceTree = "<group>"; };
 		667757C11CA3A999004FF6E0 /* CalculateLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculateLocation.swift; sourceTree = "<group>"; };
 		667AA0611C94700F00B1E3FB /* Altitude.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Altitude.swift; sourceTree = "<group>"; };
@@ -126,6 +129,7 @@
 		66F880B01CA6DFFE00727C44 /* GravityXY.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GravityXY.swift; sourceTree = "<group>"; };
 		66FE3E0B1C9D76CF0029094F /* SearchResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
 		66FF7CC71CABC12800C7BC26 /* CorrectionHeading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CorrectionHeading.swift; sourceTree = "<group>"; };
+		66FF7CC91CABD7C200C7BC26 /* CorrectionHeadingCollection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CorrectionHeadingCollection.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,6 +197,8 @@
 				66B426A21C9337B600CA511C /* GPSCoordinateCollection.swift */,
 				667AA0611C94700F00B1E3FB /* Altitude.swift */,
 				667AA0631C94705400B1E3FB /* AltitudeCollection.swift */,
+				66FF7CC71CABC12800C7BC26 /* CorrectionHeading.swift */,
+				66FF7CC91CABD7C200C7BC26 /* CorrectionHeadingCollection.swift */,
 				66FE3E0B1C9D76CF0029094F /* SearchResult.swift */,
 				668645741C9FF6150063CC81 /* Acceleration.swift */,
 				668645781CA056CC0063CC81 /* Attitude.swift */,
@@ -207,7 +213,6 @@
 				6680B5561CA937010009AA43 /* GravityZ.swift */,
 				66D693B41CA2863200D713E8 /* GravityZY.swift */,
 				66F880AC1CA6DFE500727C44 /* GravityZX.swift */,
-				66FF7CC71CABC12800C7BC26 /* CorrectionHeading.swift */,
 			);
 			name = Object;
 			sourceTree = "<group>";
@@ -215,6 +220,7 @@
 		66959D611C60A70B005F6A31 /* Graphics */ = {
 			isa = PBXGroup;
 			children = (
+				665192451CAC40FF00FC89CE /* calGreenDot.png */,
 				66EA7E781CA90FCE000F87DE /* pin.png */,
 				66C8F0E21CA82F4C00A7D0E8 /* annotationDefault.png */,
 				66CDCDB31C96F42E003AB282 /* Map Marker-50.png */,
@@ -327,6 +333,7 @@
 				66EA7E791CA90FCE000F87DE /* pin.png in Resources */,
 				66CDCDCD1C96F6AF003AB282 /* Icon-Small@3x.png in Resources */,
 				660393711C8C66DF0005829F /* calBlueDot.png in Resources */,
+				665192461CAC40FF00FC89CE /* calGreenDot.png in Resources */,
 				66CDCDCA1C96F6AF003AB282 /* Icon-83.5@2x.png in Resources */,
 				66CDCDB41C96F42E003AB282 /* Map Marker-50.png in Resources */,
 				664E6C0E1C5CBA56006A21DF /* Main.storyboard in Resources */,
@@ -363,6 +370,7 @@
 				66C8F0E51CA8454F00A7D0E8 /* HandleSearchMap.swift in Sources */,
 				668645731C9FF5AE0063CC81 /* PeakHelper.swift in Sources */,
 				668645701C9FF1FA0063CC81 /* CalculateHeading.swift in Sources */,
+				66FF7CCA1CABD7C200C7BC26 /* CorrectionHeadingCollection.swift in Sources */,
 				66D693B11CA2862100D713E8 /* GravityXZ.swift in Sources */,
 				667AA0641C94705400B1E3FB /* AltitudeCollection.swift in Sources */,
 				6680B5571CA937010009AA43 /* GravityZ.swift in Sources */,

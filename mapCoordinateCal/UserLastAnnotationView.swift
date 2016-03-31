@@ -29,6 +29,8 @@ class UserLastAnnotationView: MKAnnotationView
             orginalImage = UIImage(named: "pin")!
         case .AnnotationUserLastLocation:
             orginalImage = UIImage(named: "calBlueDot")!
+        case .AnnotationCalUserLocation:
+            orginalImage = UIImage(named: "calGreenDot")!
         }
         let size = CGSize(width: 32, height: 32)
         UIGraphicsBeginImageContext(size)

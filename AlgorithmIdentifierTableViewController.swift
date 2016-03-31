@@ -10,7 +10,7 @@ import UIKit
 
 class AlgorithmIdentifierTableViewController: UITableViewController {
 
-    var options = ["Green Line", "Blue Dot"]
+    var options = ["Green Line", "Green Dot"]
     let defaults = NSUserDefaults.standardUserDefaults()
     var selectedOption:String?{
         didSet
