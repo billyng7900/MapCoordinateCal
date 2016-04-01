@@ -96,7 +96,7 @@ public class CalculateLocation
             var newCoord:CLLocationCoordinate2D
             let finalBearing = CommonFunction.checkDegreeExceeds(step.bearing + correctedHeading)
             var actualDistance:Double
-            if step.altitudeChange < step.distance
+            if abs(step.altitudeChange) < abs(step.distance)
             {
                 actualDistance = CommonFunction.pythThm(step.altitudeChange, c: step.distance)
             }
