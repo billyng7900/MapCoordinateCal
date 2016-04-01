@@ -104,7 +104,7 @@ public class CalculateLocation
             {
                 actualDistance = 0
             }
-            newCoord = getNextCoordinate(oldLocation, distanceMeters: actualDistance, bearing: finalBearing)
+            newCoord = getNextCoordinate(oldLocation, distanceMeters: actualDistance, bearing: 360 - finalBearing)
             coordinateWalkArray.append(newCoord)
         }
         return coordinateWalkArray
