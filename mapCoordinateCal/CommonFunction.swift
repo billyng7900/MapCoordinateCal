@@ -36,13 +36,14 @@ public class CommonFunction
         return degree
     }
     
-    public static func checkDegreeExceeds(var degree:Double)->Double
+    public static func checkDegreeExceeds(degree:Double)->Double
     {
+        var finalDegree = degree
         if degree > 360
         {
-            degree = degree - 360
+            finalDegree = degree - 360
         }
-        return degree
+        return finalDegree
     }
     
     public static func pythThm(b:Double,c:Double) -> Double

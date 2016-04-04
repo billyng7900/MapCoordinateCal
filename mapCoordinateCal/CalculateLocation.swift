@@ -94,7 +94,7 @@ public class CalculateLocation
                 oldLocation = coordinateWalkArray[coordinateWalkArray.count-1]
             }
             var newCoord:CLLocationCoordinate2D
-            let finalBearing = CommonFunction.checkDegreeExceeds(step.bearing + correctedHeading)
+            let finalBearing = CommonFunction.checkDegreeExceeds(step.bearing + (360 - correctedHeading))
             var actualDistance:Double
             if abs(step.altitudeChange) < abs(step.distance)
             {
@@ -104,7 +104,7 @@ public class CalculateLocation
             {
                 actualDistance = 0
             }
-            newCoord = getNextCoordinate(oldLocation, distanceMeters: actualDistance, bearing: 360 - finalBearing)
+            newCoord = getNextCoordinate(oldLocation, distanceMeters: actualDistance, bearing: finalBearing)
             coordinateWalkArray.append(newCoord)
         }
         return coordinateWalkArray

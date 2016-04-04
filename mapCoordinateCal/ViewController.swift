@@ -359,8 +359,8 @@ class ViewController: UIViewController{
                 let region = MKCoordinateRegionMakeWithDistance(calculatedLocation!, 300, 300)
                 mapView.setRegion(region, animated: true)
             }
-            calculateLocation?.stopLocationCal()
-            mapView.showsUserLocation = true
+            //calculateLocation?.stopLocationCal()
+            //mapView.showsUserLocation = true
         }
         else
         {
@@ -432,9 +432,9 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
         {
             if calculateLocation!.isLocationUpdateStopped()
             {
-                //calculateLocation?.stopLocationCal()
-                //mapView.showsUserLocation = true
-                //calculatedLocation = nil
+                calculateLocation?.stopLocationCal()
+                mapView.showsUserLocation = true
+                calculatedLocation = nil
                 //isHeadingCalculationEnabled = false
                 //calculateHeading.stopUpdateMotionUpdates()
             }
@@ -570,7 +570,7 @@ extension ViewController
 extension ViewController:CalculateHeadingDelegate
 {
     func calculateHeading(calculateHeading: CalculateHeadingProtocol, didUpdateHeadingValue: Double, startTime:NSDate) {
-        let heading = checkCorrectedHeading(didUpdateHeadingValue)
+        let heading = didUpdateHeadingValue
         correctionHeadingCollection.appendCorrectionHeading(heading, startTime: startTime)
         if calculateLocation!.isLocationUpdateStopped()
         {

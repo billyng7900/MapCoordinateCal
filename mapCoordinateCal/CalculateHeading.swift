@@ -14,7 +14,7 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
     private var motionManager = CMMotionManager()
     private static var calculateHeading = CalculateHeading()
     private let deviceMotionUpdateInterval = 0.04
-    private let gravity = 9.08665
+    private let gravity = 9.80665
     private var timer = NSTimer()
     private var accelerationAbsList = [Acceleration]()
     private var accelerationXList = [Acceleration]()
