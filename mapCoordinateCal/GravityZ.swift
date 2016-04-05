@@ -17,7 +17,7 @@ public class GravityZ: NSObject, Gravity
         self.isPositive = isPositive
     }
     
-    public func getDegree(lowestPeakLocation:[Int],peaksLocation:[Int],accelerationListX:[Acceleration],accelerationListY:[Acceleration],accelerationListZ:[Acceleration],gravityXList:[Double],gravityYList:[Double],gravityZList:[Double]) -> Double
+    public func getDegree(peaksLocation:[Int],accelerationListX:[Acceleration],accelerationListY:[Acceleration],accelerationListZ:[Acceleration],gravityXList:[Double],gravityYList:[Double],gravityZList:[Double]) -> Double
     {
         //let peakHelper = PeakHelper()
         //let medianLocation = peakHelper.findMedianBetweenPeaks(lowestPeakLocation, peaksLocation: peaksLocation)
@@ -43,7 +43,7 @@ public class GravityZ: NSObject, Gravity
         }
         else
         {
-            for var i=0;i<lowestPeakLocation.count;i++
+            for var i=0;i<peaksLocation.count;i++
             {
                 let angleFinder = AngleFinder()
                 let angle = CommonFunction.degreesFromRadians(angleFinder.findTiltAngle(gravityZList[peaksLocation[i]]))

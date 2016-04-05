@@ -27,11 +27,12 @@ public class CorrectionHeadingCollection
     
     public func mapCorrectionHeadingtoStepRecord(stepTime:NSDate) -> Double
     {
-        var mappedHeading = correctionHeadingList.first
-        if mappedHeading == nil
+        if correctionHeadingList.count == 0
         {
             return 0.0
         }
+        var mappedHeading = correctionHeadingList.first
+        var mappedHeadingNumber:Double = 0.0
         for correctionHeading in correctionHeadingList
         {
             if correctionHeading.startTime.compare(stepTime) != NSComparisonResult.OrderedDescending
@@ -39,9 +40,10 @@ public class CorrectionHeadingCollection
                 if mappedHeading!.startTime.compare(correctionHeading.startTime) != NSComparisonResult.OrderedDescending
                 {
                     mappedHeading = correctionHeading
+                    mappedHeadingNumber = correctionHeading.heading
                 }
             }
         }
-        return (mappedHeading?.heading)!
+        return mappedHeadingNumber
     }
 }

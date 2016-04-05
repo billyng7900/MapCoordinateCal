@@ -37,7 +37,6 @@ class ViewController: UIViewController{
     var lastAltitude:Double = 0.0
     var altitudeChange = Double()
     var stepCollection:StepCollection = StepCollection.getStepCollection()
-    var bestGPSLocation = CLLocationCoordinate2D?()
     var GPSAccuracyAllowRange:Double = 35
     var GPSTimeAllowRange:Int = 15
     var placeType:String?
@@ -374,7 +373,6 @@ class ViewController: UIViewController{
     @IBAction func stopUpdateLocation(sender: AnyObject) {
         if !calculateLocation!.isLocationUpdateStopped()
         {
-            bestGPSLocation = CLLocationCoordinate2DMake(22.336672, 114.174293)
             calculateLocation?.startLocationCal(mapView.userLocation.coordinate, locationStoppedTime: NSDate())
             //mapView.showsUserLocation = false
             //var timer = NSTimer()
@@ -422,9 +420,9 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
             let lastAccurateLocation = gpsCoordinateCollection.findOutMostRecentAccurateLocation(GPSAccuracyAllowRange, timeLimit: NSDate().dateByAddingTimeInterval(-15),timeUpLimit: NSDate())
             if lastAccurateLocation != nil
             {
-                bestGPSLocation = CLLocationCoordinate2DMake((lastAccurateLocation?.latitude)!, (lastAccurateLocation?.longitude)!)
+                let lastGPSLocation = CLLocationCoordinate2DMake((lastAccurateLocation?.latitude)!, (lastAccurateLocation?.longitude)!)
                 locationStopedTime = (lastAccurateLocation?.time)!
-                calculateLocation?.startLocationCal(bestGPSLocation!, locationStoppedTime: locationStopedTime)
+                calculateLocation?.startLocationCal(lastGPSLocation, locationStoppedTime: locationStopedTime)
                 //mapView.showsUserLocation = false
             }
         }

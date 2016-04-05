@@ -11,7 +11,7 @@ import Foundation
 public protocol Gravity
 {
     var isPositive: Bool { get }
-    func getDegree(lowestPeakLocation:[Int],peaksLocation:[Int],accelerationListX:[Acceleration],accelerationListY:[Acceleration],accelerationListZ:[Acceleration],gravityXList:[Double],gravityYList:[Double],gravityZList:[Double]) -> Double
+    func getDegree(peaksLocation:[Int],accelerationListX:[Acceleration],accelerationListY:[Acceleration],accelerationListZ:[Acceleration],gravityXList:[Double],gravityYList:[Double],gravityZList:[Double]) -> Double
     
     func getVector() -> (Double,Double)
 }

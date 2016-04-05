@@ -13,7 +13,7 @@ public class AngleFinder
     public func findTiltAngle(var gravityAngle:Double) -> Double
     {
         gravityAngle = abs(gravityAngle)
-        return acos(gravityAngle/9.08665)
+        return acos(gravityAngle/9.80665)
     }
     
     public func findCloserAngleAverage(degreeList:[Double]) -> Double

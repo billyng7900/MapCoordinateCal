@@ -136,13 +136,16 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
             accelerationYList.removeAll()
             accelerationZList.removeAll()
             attitudeList.removeAll()
-            if updatedCount >= 5
+            if startTime != nil
             {
-                delegate?.calculateHeading(self, didRotatedDevice: true, previousHeading: previousHeading,previousStartTime: startTime!)
-            }
-            else
-            {
-                delegate?.calculateHeading(self, didRotatedDevice: false, previousHeading: previousHeading,previousStartTime: startTime!)
+                if updatedCount >= 5
+                {
+                    delegate?.calculateHeading(self, didRotatedDevice: true, previousHeading: previousHeading,previousStartTime: startTime!)
+                }
+                else
+                {
+                    delegate?.calculateHeading(self, didRotatedDevice: false, previousHeading: previousHeading,previousStartTime: startTime!)
+                }
             }
             isRemoving = false
             updatedCount = 0
@@ -161,10 +164,8 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
                     startTime = NSDate()
                 }
                 let gravity = decideGravityDirection(gravityXWhenChecking!, y: gravityYWhenChecking!, z: gravityZWhenChecking!)
-                
-                let lowestPeakLocation = peakHelper.findLowestPeak(accelerationAbsList, peaksLocation: peakLocation)
                 var degree = Double()
-                    degree = gravity.getDegree(lowestPeakLocation,peaksLocation: peakLocation, accelerationListX: accelerationXList, accelerationListY: accelerationYList, accelerationListZ: accelerationZList, gravityXList: gravityXList, gravityYList: gravityYList, gravityZList: gravityZList)
+                    degree = gravity.getDegree(peakLocation, accelerationListX: accelerationXList, accelerationListY: accelerationYList, accelerationListZ: accelerationZList, gravityXList: gravityXList, gravityYList: gravityYList, gravityZList: gravityZList)
                 let (xVector,yVector) = gravity.getVector()
                 delegate?.calculateHead(self, didVectorUpdated: xVector, secondVector: yVector, headingValue: degree)
                 updatedCount++

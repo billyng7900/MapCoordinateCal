@@ -15,7 +15,7 @@ public class GravityX: NSObject, Gravity
     {
         self.isPositive = isPositive
     }
-    public func getDegree(lowestPeakLocation:[Int],peaksLocation:[Int],accelerationListX:[Acceleration],accelerationListY:[Acceleration],accelerationListZ:[Acceleration],gravityXList:[Double],gravityYList:[Double],gravityZList:[Double]) -> Double
+    public func getDegree(peaksLocation:[Int],accelerationListX:[Acceleration],accelerationListY:[Acceleration],accelerationListZ:[Acceleration],gravityXList:[Double],gravityYList:[Double],gravityZList:[Double]) -> Double
     {
         var zVector:Double = 0
         var yVector:Double = 0
@@ -63,7 +63,7 @@ public class GravityX: NSObject, Gravity
     public func checkSecondGravity(zGravity:Double,yGravity:Double,zAcceleration:Double,yAcceleration:Double,angle:Double) -> GravityCal
     {
         var gravityCal:GravityCal
-        if abs(zGravity) > abs(yGravity)
+        if abs(zGravity) >= abs(yGravity)
         {
             gravityCal = GravityXZ(angle: angle, hAcceleration: zAcceleration, vAcceleration: yAcceleration)
         }

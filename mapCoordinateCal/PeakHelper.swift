@@ -71,57 +71,6 @@ public class PeakHelper
         return finalPeakLocation
     }
     
-    public func findLowestPeak(accelerationAbsList:[Acceleration],peaksLocation:[Int]) -> [Int]
-    {
-        var lowestPeakList = [Acceleration]()
-        var lowestPeakLocationList = [Int]()
-        for var i=0; i<peaksLocation.count-1; i++
-        {
-            let peak1Location = peaksLocation[i]
-            let peak2Location = peaksLocation[i+1]
-            var lowestPeak:Acceleration? = nil
-            var lowestPeakLocation:Int? = nil
-            if peak2Location - peak1Location < 30
-            {
-                for var j=peak1Location+1; j<peak2Location;j++
-                {
-                    if accelerationAbsList[j].getAcceleration() < accelerationAbsList[j-1].getAcceleration() && accelerationAbsList[j].getAcceleration() < accelerationAbsList[j+1].getAcceleration()
-                    {
-                        if lowestPeak == nil
-                        {
-                            lowestPeak = accelerationAbsList[j]
-                            lowestPeakLocation = j
-                        }
-                        else
-                        {
-                            if accelerationAbsList[j].getAcceleration() > lowestPeak?.getAcceleration()
-                            {
-                                lowestPeak = accelerationAbsList[j]
-                                lowestPeakLocation = j
-                            }
-                        }
-                    }
-                }
-                lowestPeakList.append(lowestPeak!)
-                lowestPeakLocationList.append(lowestPeakLocation!)
-            }
-        }
-        return lowestPeakLocationList
-    }
-    
-    public func findMedianBetweenPeaks(lowestPeakLocation:[Int],peaksLocation:[Int]) -> [Int]
-    {
-        var medianPeaksLocation = [Int]()
-        for var i=0;i<lowestPeakLocation.count;i++
-        {
-            let peakLocation = peaksLocation[i+1]
-            let lowestLocation = lowestPeakLocation[i]
-            let median = (peakLocation - lowestLocation)/2
-            medianPeaksLocation.append(lowestLocation+median)
-        }
-        return medianPeaksLocation
-    }
-    
     public func findLowestAttitude(valueList:[Double]) -> Double
     {
         var lowest:Double? = nil
