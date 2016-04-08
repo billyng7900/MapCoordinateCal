@@ -38,11 +38,17 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
     private var previousHeading:Double = 0
     private var startTime = NSDate?()
     private var isFirstPeakDetected = false
+    private var isHeadingCalculationEnabled = false
     var delegate: CalculateHeadingDelegate?
     
     override init()
     {
         
+    }
+    
+    public func isHeadCalculationEnabled() -> Bool
+    {
+        return isHeadingCalculationEnabled
     }
     
     public static func getCalculateHeading() -> CalculateHeading
@@ -92,6 +98,7 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
                 }
             })
         }
+        isHeadingCalculationEnabled = true
         
     }
     
@@ -103,6 +110,7 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
         accelerationYList.removeAll()
         accelerationZList.removeAll()
         attitudeList.removeAll()
+        isHeadingCalculationEnabled = false
         timer.invalidate()
     }
     

@@ -49,7 +49,6 @@ class ViewController: UIViewController{
     var isFirstTimeLocated = true
     var calculateHeading = CalculateHeading.getCalculateHeading()
     var selectedPin:SearchResult? = nil
-    var isHeadingCalculationEnabled = false
     var timerForHeadingCalculation:NSTimer? = nil
     var isAllowedToDrawLine = false
     var calculatedLocation:CLLocationCoordinate2D? = nil
@@ -74,7 +73,6 @@ class ViewController: UIViewController{
         timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: "recordBearing", userInfo: nil, repeats: true)
         startStepCounter()
         startAltimeter()
-        startMonitorActivity()
         setUpSearch()
         calculateLocation = CalculateLocation(mapView: mapView)
         if let savedPlaceType = defaults.stringForKey("Place Type")
@@ -185,32 +183,6 @@ class ViewController: UIViewController{
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    func startMonitorActivity()
-    {
-        if CMMotionActivityManager.isActivityAvailable()
-        {
-            self.activityManager.startActivityUpdatesToQueue(NSOperationQueue.mainQueue()) { data in if let data = data {
-                dispatch_async(dispatch_get_main_queue()){
-                    if data.walking == true
-                    {
-                        self.currentActivity = motion.walking
-                    }
-                    else if data.running == true
-                    {
-                        self.currentActivity = motion.running
-                    }
-                    else
-                    {
-                        self.currentActivity = motion.other
-                    }
-                }
-                }
-            }
-
-        }
-    }
-    
     func recordBearing()
     {
         bearingCollection.appendBearingList(Double(magneticBearing), time: NSDate())
@@ -241,9 +213,9 @@ class ViewController: UIViewController{
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     if(error == nil)
                     {
-                        if !self.isHeadingCalculationEnabled
+                        if !self.calculateHeading.isHeadCalculationEnabled()
                         {
-                            self.isHeadingCalculationEnabled = true
+                            //self.isHeadingCalculationEnabled = true
                             self.calculateHeading.startMotionUpdates()
                         }
                         let pace = data!.currentPace != nil ? data!.currentPace : nil
@@ -274,7 +246,6 @@ class ViewController: UIViewController{
         {
             drawWalkingLine()
         }
-        isHeadingCalculationEnabled = false
         calculateHeading.stopUpdateMotionUpdates()
     }
     
