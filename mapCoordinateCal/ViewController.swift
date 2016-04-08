@@ -101,28 +101,6 @@ class ViewController: UIViewController{
         searchResultTable.handleSearchMapDelegate = self
     }
     
-    /*func testAltitude()
-    {
-        let timeNow = NSDate()
-        altitudeCollection.appendAltitude(0.2, time: timeNow.dateByAddingTimeInterval(3))
-        altitudeCollection.appendAltitude(0.4, time: timeNow.dateByAddingTimeInterval(6))
-        altitudeCollection.appendAltitude(0.2, time: timeNow.dateByAddingTimeInterval(-2))
-        altitudeCollection.appendAltitude(0.2, time: timeNow.dateByAddingTimeInterval(4))
-        altitudeCollection.getAccumulatedAltitudeChange(timeNow, timeEnd: timeNow.dateByAddingTimeInterval(5))
-    }
-    func testCoordinate()
-    {
-        var accuracy = 58.0
-        var dateSecond = -15.0
-        for var i=0;i<15;i++
-        {
-            gpsCoordinateCollection.appendGPSCoordinateList(123, latitude: 123, accuracy: accuracy, time: NSDate().dateByAddingTimeInterval(dateSecond))
-            accuracy++
-            dateSecond++
-        }
-        //gpsCoordinateCollection.findOutMostRecentAccurateLocation(GPSAccuracyAllowRange, timeLimit: NSDate().dateByAddingTimeInterval(-15))
-    }*/
-    
     func revealRegionDetailsWithLongPressOnMap(sender: UILongPressGestureRecognizer)
     {
         if sender.state != UIGestureRecognizerState.Began
@@ -160,25 +138,6 @@ class ViewController: UIViewController{
         })
     }
     
-    /*func testNSDateAdd(string:String) -> NSDate
-    {
-        let dateStringFormatter = NSDateFormatter()
-        dateStringFormatter.dateFormat = "HH:mm:ss"
-        let d = dateStringFormatter.dateFromString(string)
-        return d!
-    }
-
-    func testStepRecordAdd()
-    {
-        let timeNow = NSDate()
-        altitudeCollection.appendAltitude(0.2, time: timeNow.dateByAddingTimeInterval(3))
-        altitudeCollection.appendAltitude(0.4, time: timeNow.dateByAddingTimeInterval(6))
-        altitudeCollection.appendAltitude(0.3, time: timeNow.dateByAddingTimeInterval(-2))
-        altitudeCollection.appendAltitude(0.6, time: timeNow.dateByAddingTimeInterval(4))
-        stepCollection.appendStepList(12, distance: 1, startDate: NSDate(), endDate: timeNow.dateByAddingTimeInterval(3), pace: nil, cadence: nil, bearing: 123)
-        stepCollection.appendStepList(12, distance: 1, startDate: NSDate(), endDate: timeNow.dateByAddingTimeInterval(7), pace: nil, cadence: nil, bearing: 123)
-    }
-*/
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

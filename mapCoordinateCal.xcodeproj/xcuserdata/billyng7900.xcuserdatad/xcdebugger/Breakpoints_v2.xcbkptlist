@@ -106,22 +106,6 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/ViewController.swift"
-            timestampString = "481535734.504253"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "213"
-            endingLineNumber = "213"
-            landmarkName = "startStepCounter()"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "mapCoordinateCal/ViewController.swift"
             timestampString = "481816137.749273"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
@@ -273,22 +257,6 @@
             endingLineNumber = "57"
             landmarkName = "appendGPSCoordinateList(_:latitude:accuracy:time:)"
             landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "mapCoordinateCal/ViewController.swift"
-            timestampString = "481535734.504253"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
-            landmarkName = "ViewController"
-            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -652,7 +620,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "115"
             endingLineNumber = "115"
-            landmarkName = "checkPeak()"
+            landmarkName = "stopUpdateMotionUpdates()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -668,7 +636,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "193"
             endingLineNumber = "193"
-            landmarkName = "toMedianFilter(_:)"
+            landmarkName = "sorting(_:v2:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -700,8 +668,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "194"
             endingLineNumber = "194"
-            landmarkName = "toMedianFilter(_:)"
-            landmarkType = "5">
+            landmarkName = "CalculateHeading"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -780,7 +748,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "117"
             endingLineNumber = "117"
-            landmarkName = "checkPeak()"
+            landmarkName = "lowPassFilter(_:now:alpha:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -828,7 +796,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "216"
             endingLineNumber = "216"
-            landmarkName = "medianFilter(_:)"
+            landmarkName = "toMedianFilter(_:)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1134,22 +1102,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "mapCoordinateCal/ViewController.swift"
-            timestampString = "481535734.504253"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "110"
-            endingLineNumber = "110"
-            landmarkName = "ViewController"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "mapCoordinateCal/AltitudeCollection.swift"
             timestampString = "481816137.749273"
             startingColumnNumber = "9223372036854775807"
@@ -1236,7 +1188,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "266"
             endingLineNumber = "266"
-            landmarkName = "isMoreThanRange(_:highest:)"
+            landmarkName = "getIsRotated()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1540,7 +1492,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "110"
             endingLineNumber = "110"
-            landmarkName = "lowPassFilter(_:now:alpha:)"
+            landmarkName = "stopUpdateMotionUpdates()"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1556,8 +1508,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "108"
             endingLineNumber = "108"
-            landmarkName = "CalculateHeading"
-            landmarkType = "3">
+            landmarkName = "stopUpdateMotionUpdates()"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

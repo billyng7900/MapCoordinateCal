@@ -8,12 +8,11 @@
 
 import Foundation
 import CoreMotion
+
 public class StepCounter
 {
-    private var stepCounter = StepCounter()
     let pedoMeter = CMPedometer()
-    let calculateHeading = CalculateHeading()
-    var totalDistanceCount:Double = 0.0
+    let calculateHeading = CalculateHeading.getCalculateHeading()
     func startStepCounter()
     {
         if CMPedometer.isStepCountingAvailable()
@@ -24,16 +23,15 @@ public class StepCounter
                     {
                         if !self.calculateHeading.isHeadCalculationEnabled()
                         {
+                            //self.isHeadingCalculationEnabled = true
                             self.calculateHeading.startMotionUpdates()
                         }
-                        let pace = data!.currentPace != nil ? data!.currentPace : nil
-                        let cadence = data!.currentCadence != nil ? data!.currentCadence : nil
                         let changeDistance = Double(data!.distance!) - self.totalDistanceCount
-                        if !self.bearingCollection.isEmpty() && changeDistance > 0
+                        if !self.bearingCollection.isBearingListEmpty() && changeDistance > 0
                         {
                             self.timerForHeadingCalculation?.invalidate()
                             let bearingRecord = self.bearingCollection.mapBearingRecordFromDate(NSDate())
-                            self.stepCollection.appendStepList(Int(data!.numberOfSteps), distance:changeDistance, startDate: data!.startDate, endDate: data!.endDate, pace: pace, cadence: cadence, bearing: 360 - Double(bearingRecord.getBearing()))
+                            self.stepCollection.appendStepList(changeDistance, endDate: data!.endDate, bearing: 360 - Double(bearingRecord.getBearing()))
                             if self.calculateLocation!.isLocationUpdateStopped() && self.isAllowedToDrawLine
                             {
                                 self.drawWalkingLine()
