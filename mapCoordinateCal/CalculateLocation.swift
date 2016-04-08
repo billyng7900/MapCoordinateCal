@@ -84,7 +84,7 @@ public class CalculateLocation
         for step in stepListAfterStopped
         {
             var oldLocation: CLLocationCoordinate2D
-            let correctedHeading = correctionHeadingCollection.mapCorrectionHeadingtoStepRecord(step.endDate)
+            let correctedHeading = correctionHeadingCollection.mapCorrectionHeadingtoStepRecord(step.getEndDate())
             if coordinateWalkArray.count == 0
             {
                 oldLocation = (lastGPSLocation)!
@@ -94,11 +94,11 @@ public class CalculateLocation
                 oldLocation = coordinateWalkArray[coordinateWalkArray.count-1]
             }
             var newCoord:CLLocationCoordinate2D
-            let finalBearing = CommonFunction.checkDegreeExceeds(step.bearing + (360 - correctedHeading))
+            let finalBearing = CommonFunction.checkDegreeExceeds(step.getBearing() + (360 - correctedHeading))
             var actualDistance:Double
-            if abs(step.altitudeChange) < abs(step.distance)
+            if abs(step.getAltitudeChange()) < abs(step.getDistance())
             {
-                actualDistance = CommonFunction.pythThm(step.altitudeChange, c: step.distance)
+                actualDistance = CommonFunction.pythThm(step.getAltitudeChange(), c: step.getDistance())
             }
             else
             {

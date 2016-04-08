@@ -33,7 +33,7 @@ public class BearingCollection
         let timeDateString = CommonFunction.formatNSDateToSecond(time)//HH:mm:ss
         for bearing in bearingList
         {
-            let bearingDateString = CommonFunction.formatNSDateToSecond(bearing.getDate())
+            let bearingDateString = CommonFunction.formatNSDateToSecond(bearing.getTime())
             if bearingDateString == timeDateString
             {
                 return bearing
@@ -42,7 +42,7 @@ public class BearingCollection
         return bearingList.last!
     }
     
-    public func isEmpty() -> Bool
+    public func isBearingListEmpty() -> Bool
     {
         return bearingList.isEmpty
     }

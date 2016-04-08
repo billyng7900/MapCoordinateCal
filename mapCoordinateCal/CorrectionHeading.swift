@@ -9,12 +9,22 @@
 import Foundation
 public class CorrectionHeading
 {
-    var heading:Double
-    var startTime:NSDate
+    private var heading:Double
+    private var startTime:NSDate
     
     init(heading:Double, startTime:NSDate)
     {
         self.heading = heading
         self.startTime = startTime
+    }
+    
+    public func getHeading() -> Double
+    {
+        return heading
+    }
+    
+    public func getStartTime() -> NSDate
+    {
+        return startTime
     }
 }

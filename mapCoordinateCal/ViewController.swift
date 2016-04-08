@@ -218,14 +218,12 @@ class ViewController: UIViewController{
                             //self.isHeadingCalculationEnabled = true
                             self.calculateHeading.startMotionUpdates()
                         }
-                        let pace = data!.currentPace != nil ? data!.currentPace : nil
-                        let cadence = data!.currentCadence != nil ? data!.currentCadence : nil
                         let changeDistance = Double(data!.distance!) - self.totalDistanceCount
-                        if !self.bearingCollection.isEmpty() && changeDistance > 0
+                        if !self.bearingCollection.isBearingListEmpty() && changeDistance > 0
                         {
                             self.timerForHeadingCalculation?.invalidate()
                             let bearingRecord = self.bearingCollection.mapBearingRecordFromDate(NSDate())
-                            self.stepCollection.appendStepList(Int(data!.numberOfSteps), distance:changeDistance, startDate: data!.startDate, endDate: data!.endDate, pace: pace, cadence: cadence, bearing: 360 - Double(bearingRecord.getBearing()))
+                            self.stepCollection.appendStepList(changeDistance, endDate: data!.endDate, bearing: 360 - Double(bearingRecord.getBearing()))
                             if self.calculateLocation!.isLocationUpdateStopped() && self.isAllowedToDrawLine
                             {
                                 self.drawWalkingLine()
@@ -299,26 +297,6 @@ class ViewController: UIViewController{
             self.presentViewController(alertController, animated: true, completion: nil)
         }
     }
-    
-    func repeatTimer()
-    {
-        timersecond++
-        var bearing:Double = 360 - 41
-        if timersecond > 8
-        {
-            bearing = 360 - 10
-        }
-        if timersecond > 18
-        {
-            bearing = 20
-        }
-        if calculateLocation!.isLocationUpdateStopped()
-        {
-            stepCollection.appendStepList(2, distance: 4, startDate: NSDate(), endDate: NSDate(), pace: nil, cadence: nil, bearing: bearing)
-            drawWalkingLine()
-        }
-    }
-    
     @IBAction func searchLocation(sender: AnyObject) {
         checkLocationService()
         if calculateLocation!.isLocationUpdateStopped()
@@ -391,8 +369,8 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
             let lastAccurateLocation = gpsCoordinateCollection.findOutMostRecentAccurateLocation(GPSAccuracyAllowRange, timeLimit: NSDate().dateByAddingTimeInterval(-15),timeUpLimit: NSDate())
             if lastAccurateLocation != nil
             {
-                let lastGPSLocation = CLLocationCoordinate2DMake((lastAccurateLocation?.latitude)!, (lastAccurateLocation?.longitude)!)
-                locationStopedTime = (lastAccurateLocation?.time)!
+                let lastGPSLocation = CLLocationCoordinate2DMake((lastAccurateLocation?.getLatitude())!, (lastAccurateLocation?.getLongitude())!)
+                locationStopedTime = (lastAccurateLocation?.getTime())!
                 calculateLocation?.startLocationCal(lastGPSLocation, locationStoppedTime: locationStopedTime)
                 //mapView.showsUserLocation = false
             }
@@ -424,6 +402,7 @@ extension ViewController:MKMapViewDelegate,CLLocationManagerDelegate
             if placeType == "Green Line"
             {
                 mapView.removeOverlays(mapView.overlays)
+                removeCalPin()
                 let myPolyLine = MKPolyline(coordinates: &coordinateWalkArray , count: coordinateWalkArray.count)
                 mapView.addOverlay(myPolyLine)
             }
@@ -501,6 +480,10 @@ extension ViewController
     {
         if let settingController = segue.sourceViewController as? SettingsTableViewController
         {
+            if self.calculateLocation!.isLocationUpdateStopped() && self.isAllowedToDrawLine && stepCollection.isStepListEmpty()
+            {
+                self.drawWalkingLine()
+            }
             placeType = settingController.option!
         }
     }

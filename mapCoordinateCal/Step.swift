@@ -10,24 +10,36 @@ import Foundation
 
 public class Step
 {
-    var steps:Int
-    var distance:Double
-    var startDate:NSDate
-    var endDate:NSDate
-    var pace:NSNumber?
-    var cadence:NSNumber?
-    var altitudeChange:Double
-    var bearing:Double
+    private var distance:Double
+    private var endDate:NSDate
+    private var altitudeChange:Double
+    private var bearing:Double
     
-    init(steps:Int, distance:Double, startDate:NSDate, endDate:NSDate, pace:NSNumber?, cadence:NSNumber?, altitudeChange:Double, bearing:Double)
+    init(distance:Double, endDate:NSDate, altitudeChange:Double, bearing:Double)
     {
-        self.steps = steps
         self.distance = distance
-        self.startDate = startDate
         self.endDate = endDate
-        self.pace = pace
-        self.cadence = cadence
         self.altitudeChange = altitudeChange
         self.bearing = bearing
+    }
+    
+    public func getDistance() -> Double
+    {
+        return distance
+    }
+    
+    public func getEndDate() -> NSDate
+    {
+        return endDate
+    }
+    
+    public func getAltitudeChange() -> Double
+    {
+        return altitudeChange
+    }
+    
+    public func getBearing() -> Double
+    {
+        return bearing
     }
 }

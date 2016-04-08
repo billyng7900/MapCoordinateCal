@@ -9,8 +9,8 @@
 import Foundation
 public class CorrectionHeadingCollection
 {
-    static var correctionHeadingCollection = CorrectionHeadingCollection()
-    var correctionHeadingList:[CorrectionHeading] = []
+    private static var correctionHeadingCollection = CorrectionHeadingCollection()
+    private var correctionHeadingList:[CorrectionHeading] = []
     
     private init(){}
     
@@ -35,12 +35,12 @@ public class CorrectionHeadingCollection
         var mappedHeadingNumber:Double = 0.0
         for correctionHeading in correctionHeadingList
         {
-            if correctionHeading.startTime.compare(stepTime) != NSComparisonResult.OrderedDescending
+            if correctionHeading.getStartTime().compare(stepTime) != NSComparisonResult.OrderedDescending
             {
-                if mappedHeading!.startTime.compare(correctionHeading.startTime) != NSComparisonResult.OrderedDescending
+                if mappedHeading!.getStartTime().compare(correctionHeading.getStartTime()) != NSComparisonResult.OrderedDescending
                 {
                     mappedHeading = correctionHeading
-                    mappedHeadingNumber = correctionHeading.heading
+                    mappedHeadingNumber = correctionHeading.getHeading()
                 }
             }
         }

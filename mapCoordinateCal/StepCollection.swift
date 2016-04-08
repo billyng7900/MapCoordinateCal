@@ -10,7 +10,7 @@ import Foundation
 
 public class StepCollection
 {
-    static var stepCollection = StepCollection()
+    static private var stepCollection = StepCollection()
     var stepList = [Step]()
     private init()
     {
@@ -22,11 +22,11 @@ public class StepCollection
         return stepCollection
     }
     
-    public func appendStepList(steps: Int, distance:Double, startDate:NSDate, endDate:NSDate, pace:NSNumber?, cadence:NSNumber?, bearing:Double)
+    public func appendStepList(distance:Double, endDate:NSDate, bearing:Double)
     {
         var altitudeChange:Double
         let altitudeCollection = AltitudeCollection.getAltitudeCollection()
-        if altitudeCollection.altitudeList.isEmpty
+        if altitudeCollection.isAltitudeListEmpty()
         {
             altitudeChange = 0.0
         }
@@ -37,9 +37,9 @@ public class StepCollection
         }
         else
         {
-            altitudeChange = altitudeCollection.getAccumulatedAltitudeChange((stepList.last?.endDate)!, timeEnd: endDate)
+            altitudeChange = altitudeCollection.getAccumulatedAltitudeChange((stepList.last?.getEndDate())!, timeEnd: endDate)
         }
-        let step:Step = Step(steps: steps, distance: distance, startDate: startDate, endDate: endDate, pace: pace, cadence: cadence, altitudeChange: altitudeChange, bearing: bearing)
+        let step:Step = Step(distance: distance, endDate: endDate, altitudeChange: altitudeChange, bearing: bearing)
         stepList.append(step)
     }
     
@@ -49,7 +49,7 @@ public class StepCollection
         
         for step in stepList
         {
-            if targetDate.compare(step.endDate) != NSComparisonResult.OrderedDescending//if step record after or equal to the target date
+            if targetDate.compare(step.getEndDate()) != NSComparisonResult.OrderedDescending//if step record after or equal to the target date
             {
                 stepRecordAfterDate.append(step)
             }
@@ -57,8 +57,8 @@ public class StepCollection
         return stepRecordAfterDate
     }
     
-    func emptyStepList()
+    func isStepListEmpty() -> Bool
     {
-        stepList.removeAll()
+        return stepList.isEmpty
     }
 }

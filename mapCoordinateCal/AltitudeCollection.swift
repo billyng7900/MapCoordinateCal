@@ -10,9 +10,14 @@ import Foundation
 
 public class AltitudeCollection
 {
-    var altitudeList = [Altitude]()
-    static var altitudeCollection = AltitudeCollection()
+    private var altitudeList = [Altitude]()
+    private static var altitudeCollection = AltitudeCollection()
     
+    
+    public func isAltitudeListEmpty() -> Bool
+    {
+        return altitudeList.isEmpty
+    }
     private init()
     {
         
@@ -28,9 +33,9 @@ public class AltitudeCollection
         var accumulatedAltitude = 0.0
         for altitude in altitudeList
         {
-            if timeStart.compare(altitude.time) != NSComparisonResult.OrderedDescending && timeEnd.compare(altitude.time) != NSComparisonResult.OrderedAscending
+            if timeStart.compare(altitude.getTime()) != NSComparisonResult.OrderedDescending && timeEnd.compare(altitude.getTime()) != NSComparisonResult.OrderedAscending
             {
-                accumulatedAltitude += altitude.altitude
+                accumulatedAltitude += altitude.getAltitude()
             }
         }
         return accumulatedAltitude

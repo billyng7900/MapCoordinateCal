@@ -11,8 +11,8 @@ import CoreLocation
 
 public class GPSCoordinateCollection
 {
-    var gpsCoordinateList = [GPSCoordinate]()
-    static var gpsCoordinateCollection = GPSCoordinateCollection()
+    private var gpsCoordinateList = [GPSCoordinate]()
+    private static var gpsCoordinateCollection = GPSCoordinateCollection()
     
     private init()
     {
@@ -29,15 +29,15 @@ public class GPSCoordinateCollection
         var greatCoordinate:GPSCoordinate?
         for coordinate in gpsCoordinateList
         {
-            if timeLimit.compare(coordinate.time) != NSComparisonResult.OrderedDescending && locationAccuracyAllowRange >= coordinate.accuracy && timeUpLimit.compare(coordinate.time) != NSComparisonResult.OrderedAscending
+            if timeLimit.compare(coordinate.getTime()) != NSComparisonResult.OrderedDescending && locationAccuracyAllowRange >= coordinate.getAccuracy() && timeUpLimit.compare(coordinate.getTime()) != NSComparisonResult.OrderedAscending
             {
                 if greatCoordinate != nil
                 {
-                    if coordinate.accuracy < greatCoordinate?.accuracy
+                    if coordinate.getAccuracy() < greatCoordinate?.getAccuracy()
                     {
                         greatCoordinate = coordinate
                     }
-                    else if coordinate.accuracy == greatCoordinate?.accuracy && coordinate.time.compare((greatCoordinate?.time)!) != NSComparisonResult.OrderedDescending
+                    else if coordinate.getAccuracy() == greatCoordinate?.getAccuracy() && coordinate.getTime().compare((greatCoordinate?.getTime())!) != NSComparisonResult.OrderedDescending
                     {
                         greatCoordinate = coordinate
                     }

@@ -10,8 +10,8 @@ import Foundation
 
 public class Bearing
 {
-    var bearing:Double
-    var time:NSDate
+    private var bearing:Double
+    private var time:NSDate
     
     init(bearing:Double, time:NSDate)
     {
@@ -24,7 +24,7 @@ public class Bearing
         return bearing
     }
     
-    public func getDate() -> NSDate
+    public func getTime() -> NSDate
     {
         return time
     }

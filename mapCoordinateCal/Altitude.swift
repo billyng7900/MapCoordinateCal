@@ -10,12 +10,22 @@ import Foundation
 
 public class Altitude
 {
-    var altitude:Double
-    var time:NSDate
+    private var altitude:Double
+    private var time:NSDate
     
     init(altitude:Double, time:NSDate)
     {
         self.altitude = altitude
         self.time = time
+    }
+    
+    public func getAltitude() -> Double
+    {
+        return altitude
+    }
+    
+    public func getTime() -> NSDate
+    {
+        return time
     }
 }
