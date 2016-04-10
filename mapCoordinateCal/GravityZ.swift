@@ -79,8 +79,4 @@ public class GravityZ: NSObject, Gravity
         }
         return gravityCal
     }
-    
-    public func getVector() -> (Double, Double) {
-        return (finalxVector,finalyVector)
-    }
 }

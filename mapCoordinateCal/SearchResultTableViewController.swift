@@ -93,8 +93,8 @@ extension SearchResultTableViewController: UISearchResultsUpdating
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell")!
         let selectedItem = searchResultList[indexPath.row]
-        cell.textLabel?.text = selectedItem.description
-        cell.detailTextLabel?.text = selectedItem.formattedAddress
+        cell.textLabel?.text = selectedItem.getDescription()
+        cell.detailTextLabel?.text = selectedItem.getFormattedAddress()
         return cell
     }
 }

@@ -46,4 +46,10 @@ public class CorrectionHeadingCollection
         }
         return mappedHeadingNumber
     }
+    
+    public func modifyLastCorrectionHeadingRecord(heading:Double)
+    {
+        let lastCorrectionHeadingTime = correctionHeadingList.last?.getStartTime()
+        correctionHeadingList[correctionHeadingList.count-1] = CorrectionHeading(heading: heading, startTime: lastCorrectionHeadingTime!)
+    }
 }

@@ -73,9 +73,5 @@ public class GravityX: NSObject, Gravity
         }
         return gravityCal
     }
-    
-    public func getVector() -> (Double, Double) {
-        return (0.0,0.0)
-    }
 
 }

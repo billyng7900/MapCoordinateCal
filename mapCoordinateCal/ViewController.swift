@@ -492,34 +492,11 @@ extension ViewController:CalculateHeadingDelegate
     
     func calculateHeading(CalculateHeading: CalculateHeadingProtocol, didRotatedDevice isAccurateHeadPushed: Bool, previousHeading: Double, previousStartTime:NSDate) {
         isAllowedToDrawLine = false
-        if !isAccurateHeadPushed
-        {
-            correctionHeadingCollection.appendCorrectionHeading(previousHeading, startTime: previousStartTime)
-        }
     }
     
-    func checkCorrectedHeading(correctedHeading:Double) -> Double
+    func calculateHeading(calculateHeading:CalculateHeadingProtocol, didLastHeadingChangeValue: Double)
     {
-        var finalHeading = correctedHeading
-        if correctedHeading <= 15 || correctedHeading >= 345
-        {
-            finalHeading = 0
-        }
-        else if correctedHeading <= 105 && correctedHeading >= 75
-        {
-            finalHeading = 90
-        }
-        else if correctedHeading <= 195 && correctedHeading >= 165
-        {
-            finalHeading = 180
-        }
-        else if correctedHeading <= 285 && correctedHeading >= 255
-        {
-            finalHeading = 270
-        }
-        return finalHeading
-    }
-    func calculateHead(calculateHeading: CalculateHeadingProtocol, didVectorUpdated: Double, secondVector: Double, headingValue:Double) {
+        correctionHeadingCollection.modifyLastCorrectionHeadingRecord(didLastHeadingChangeValue)
     }
 }
 
@@ -544,7 +521,7 @@ extension ViewController: HandleMapSearch
 
         selectedPin = result
         let coordinate = result.getPlaceCoordinate()
-        let annotation = Annotation(coordinate: coordinate, title: result.description, subtitle: result.formattedAddress, type: AnnotationType.AnnotationDefault)
+        let annotation = Annotation(coordinate: coordinate, title: result.getDescription(), subtitle: result.getFormattedAddress(), type: AnnotationType.AnnotationDefault)
         mapView.addAnnotation(annotation)
         let span = MKCoordinateSpanMake(0.005, 0.005)
         let region = MKCoordinateRegionMake(coordinate, span)

@@ -174,13 +174,20 @@ public class CalculateHeading:NSObject, CalculateHeadingProtocol
                 let gravity = decideGravityDirection(gravityXWhenChecking!, y: gravityYWhenChecking!, z: gravityZWhenChecking!)
                 var degree = Double()
                     degree = gravity.getDegree(peakLocation, accelerationListX: accelerationXList, accelerationListY: accelerationYList, accelerationListZ: accelerationZList, gravityXList: gravityXList, gravityYList: gravityYList, gravityZList: gravityZList)
-                let (xVector,yVector) = gravity.getVector()
-                delegate?.calculateHead(self, didVectorUpdated: xVector, secondVector: yVector, headingValue: degree)
                 updatedCount++
                 if updatedCount == 5
                 {
                     delegate?.calculateHeading(self, didUpdateHeadingValue: degree, startTime: startTime!)
                     previousHeading = degree
+                }
+                if updatedCount > 5 && updatedCount % 5 == 0
+                {
+                    let angleFinder = AngleFinder()
+                    let angleDifference = angleFinder.findDifferenceBetweenAngles(previousHeading, angle2: degree)
+                    if abs(angleDifference) >= 10
+                    {
+                        delegate?.calculateHeading(self, didLastHeadingChangeValue: degree)
+                    }
                 }
             }
         }
